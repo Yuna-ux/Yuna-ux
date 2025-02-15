@@ -1,4 +1,4 @@
-# Programming Languages & Skills
+# Programming Languages & Exploiting
 
 I am proficient in the following programming languages and technologies:
 
@@ -10,5 +10,3 @@ I am proficient in the following programming languages and technologies:
 - **Monaco**: Utilizing Monaco Editor for code editing in web applications.
 
 Additionally, I create **Roblox Executors** and work with custom scripting for Roblox games.
-
-Feel free to check out my work or contact me for more details!
