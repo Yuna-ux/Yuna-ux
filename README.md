@@ -11,4 +11,4 @@ I am proficient in the following programming languages and technologies:
 
 Additionally, I create **Roblox Executors** and work with custom scripting for Roblox games.
 
-![Csharp](https://github.com/RAFA12763/RAFA12763/blob/main/C%23 Logo.png)
+![Csharp](https://upload.wikimedia.org/wikipedia/commons/4/4f/Csharp_Logo.png)
