@@ -10,3 +10,5 @@ I am proficient in the following programming languages and technologies:
 - **Monaco**: Utilizing Monaco Editor for code editing in web applications.
 
 Additionally, I create **Roblox Executors** and work with custom scripting for Roblox games.
+
+![Logo do GitHub](https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png)
