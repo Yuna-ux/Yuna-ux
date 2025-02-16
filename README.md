@@ -16,7 +16,7 @@ I am proficient in the following programming languages and technologies:
 --------------------------------------
 Additionally, I create **Roblox Executors** and work with custom scripting for Roblox games.
 
-#example codes:
+# example codes:
 
 ``` lua
 local Table = {10,1,1}
