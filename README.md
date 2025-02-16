@@ -8,7 +8,7 @@ I am proficient in the following programming languages and technologies:
 --------------------------------------
 - **Luau**: Lua variant used in Roblox game scripting.
 --------------------------------------
-- **C#**: Developing applications and games with C#.<img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Csharp_Logo.png" width="30" height="30"/>
+- **C#**: Developing applications and games with C#.<img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Csharp_Logo.png" width="60" height="60"/>
 --------------------------------------
 - **JavaScript (JS)**: Writing scripts for interactive websites and web applications.
 --------------------------------------
