@@ -2,7 +2,7 @@
 
 I am proficient in the following programming languages and technologies:
 --------------------------------------
-- **HTML**: Creating web pages with structure and layout.<img src="https://raw.githubusercontent.com/RAFA12763/RAFA12763/refs/heads/main/html logo.png" width="60" height="60"/>
+- **HTML**: Creating web pages with structure and layout.<img src="https://raw.githubusercontent.com/RAFA12763/RAFA12763/refs/heads/main/html logo.png" width="40" height="40"/>
 --------------------------------------
 - **Lua**: Scripting in Lua for game development and automation.
 --------------------------------------
