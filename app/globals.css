@@ -1,32 +1,53 @@
-'use client';
+body {
+  margin: 0;
+  background-color: #000;
+  overflow: hidden;
+  height: 100vh;
+}
 
-import './globals.css';
-import { useEffect } from 'react';
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
 
-export default function Home() {
-  useEffect(() => {
-    const createBubble = () => {
-      const bubble = document.createElement('div');
-      bubble.classList.add('bubble');
-      bubble.style.left = Math.random() * 100 + 'vw';
-      const size = Math.random() * 20 + 10;
-      bubble.style.width = `${size}px`;
-      bubble.style.height = `${size}px`;
-      document.body.appendChild(bubble);
-      setTimeout(() => bubble.remove(), 5000);
-    };
+.button-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  z-index: 1;
+}
 
-    const interval = setInterval(createBubble, 300);
-    return () => clearInterval(interval);
-  }, []);
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
-  return (
-    <div className="container">
-      <div className="button-container">
-        {Array.from({ length: 16 }, (_, i) => (
-          <button key={i}>Botão {i + 1}</button>
-        ))}
-      </div>
-    </div>
-  );
-                                 }
+.bubble {
+  position: absolute;
+  bottom: -50px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0;
+  animation: rise 5s linear forwards;
+}
+
+@keyframes rise {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-110vh);
+    opacity: 0;
+  }
+}
