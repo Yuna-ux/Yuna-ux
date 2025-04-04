@@ -1,10 +1,18 @@
-export default function Home() {
+export default function Page() {
   return (
-    <main className="home">
-      <h1>Welcome to the Local Proxy Service</h1>
-      <p>To use this proxy, configure your browser or system with the PAC URL below:</p>
-      <code>http://localhost:3000/proxy.pac</code>
-      <p>Only traffic to *.local will go through the proxy.</p>
-    </main>
+    <html lang="en">
+      <head>
+        <title>Yuna Proxy Setup</title>
+        <link rel="stylesheet" href="/style.css" />
+      </head>
+      <body>
+        <main>
+          <h1>Enable Proxy Access</h1>
+          <p>To use this proxy, you must configure your network settings with the PAC file provided below.</p>
+          <p>Set your automatic proxy configuration (PAC) URL to:</p>
+          <code>https://yuna-ux.vercel.app/proxy.pac</code>
+        </main>
+      </body>
+    </html>
   );
 }
