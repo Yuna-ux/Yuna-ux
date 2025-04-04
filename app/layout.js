@@ -3,9 +3,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <link rel="stylesheet" href="/style.css" />
-        <title>Proxy Access</title>
+        <title>Proxy PAC Access</title>
       </head>
       <body>{children}</body>
     </html>
-  )
+  );
 }
