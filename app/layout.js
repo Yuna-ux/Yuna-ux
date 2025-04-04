@@ -1,3 +1,5 @@
+import './style.css'
+
 export const metadata = {
   title: 'Yuna-ux',
   description: 'Yuna-ux Page',
@@ -5,7 +7,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="pt">
+    <html lang="en">
       <body>{children}</body>
     </html>
   )
