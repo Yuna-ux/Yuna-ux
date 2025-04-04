@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 export default function Home() {
   const [copied, setCopied] = useState(false);
-  const pacUrl = 'https://your-domain.vercel.app/proxy.pac';
+  const pacUrl = 'https://yuna-ux.vercel.app/proxy.pac';
 
   const copyToClipboard = async () => {
     await navigator.clipboard.writeText(pacUrl);
