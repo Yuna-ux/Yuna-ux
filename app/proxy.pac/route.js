@@ -1,16 +1,13 @@
-export async function GET() {
-  const pacScript = `
+export function GET() {
+  const pacContent = `
     function FindProxyForURL(url, host) {
-      if (shExpMatch(host, "*.google.com")) {
-        return "PROXY yuna-ux.vercel.app:443";
+      if (shExpMatch(host, "*.example.com")) {
+        return "PROXY 127.0.0.1:8080";
       }
       return "DIRECT";
     }
   `;
-
-  return new Response(pacScript, {
-    headers: {
-      "Content-Type": "application/x-ns-proxy-autoconfig",
-    },
+  return new Response(pacContent, {
+    headers: { "Content-Type": "application/x-ns-proxy-autoconfig" }
   });
 }
