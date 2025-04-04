@@ -1,32 +1,10 @@
-'use client';
-
-function copyText(text) {
-  navigator.clipboard.writeText(text);
-}
-
 export default function Home() {
-  const buttons = Array.from({ length: 16 }, (_, i) => ({
-    id: i + 1,
-    label: `Proxy ${i + 1}`,
-    value: `http://proxy${i + 1}.com`
-  }));
-
   return (
-    <main>
-      <h1>Welcome to Proxy Access</h1>
-      <div className="buttons">
-        {buttons.map(btn => (
-          <button key={btn.id} onClick={() => copyText(btn.value)}>{btn.label}</button>
-        ))}
-      </div>
-      {Array.from({ length: 20 }).map((_, i) => (
-        <div className="bubble" key={i} style={{
-          left: `${Math.random() * 100}%`,
-          animationDelay: `${Math.random() * 5}s`,
-          width: `${10 + Math.random() * 20}px`,
-          height: `${10 + Math.random() * 20}px`
-        }} />
-      ))}
+    <main className="home">
+      <h1>Welcome to the Local Proxy Service</h1>
+      <p>To use this proxy, configure your browser or system with the PAC URL below:</p>
+      <code>http://localhost:3000/proxy.pac</code>
+      <p>Only traffic to *.local will go through the proxy.</p>
     </main>
-  )
+  );
 }
