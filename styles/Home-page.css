@@ -5,6 +5,8 @@
     --text-color: #ffffff;
     --button-bg: linear-gradient(45deg, #ff5733, #c70039);
     --button-hover: linear-gradient(45deg, #ff6f50, #d60042);
+    --scrollbar-bg: #444;
+    --scrollbar-thumb: #ff5733;
 }
 
 * {
@@ -12,6 +14,12 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Arial', sans-serif;
+    transition: all 0.3s ease;
+}
+
+html, body {
+    height: 100%;
+    overflow: auto; /* Permite rolagem global */
 }
 
 body {
@@ -23,8 +31,9 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    overflow: hidden;
     position: relative;
+    overflow-y: auto;
+    max-width: 100vw;
 }
 
 h2 {
@@ -45,6 +54,24 @@ h2 {
     margin: 0 auto;
     justify-items: center; /* Centraliza os itens horizontalmente */
     align-items: center;  /* Centraliza os itens verticalmente */
+    max-height: 80vh; /* Permite que o container tenha altura limitada */
+    overflow-y: auto; /* Habilita rolagem dentro do container */
+    padding-right: 10px; /* Espaço para a barra de rolagem */
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-bg);
+}
+
+.container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.container::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 10px;
+}
+
+.container::-webkit-scrollbar-track {
+    background: var(--scrollbar-bg);
 }
 
 .btn {
