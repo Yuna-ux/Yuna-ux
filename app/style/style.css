@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+.editor-container, .result-container {
+  @apply bg-white p-4 rounded-lg shadow-md;
+}
+
+.editor-title, .result-title {
+  @apply text-lg font-semibold mb-2 text-gray-800;
+}
+
+.editor-textarea {
+  @apply w-full h-64 p-3 border border-gray-300 rounded-md font-mono text-sm;
+}
+
+.result-output {
+  @apply w-full h-64 p-3 border border-gray-300 rounded-md bg-gray-50 overflow-auto text-sm;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.obfuscate-button {
+  @apply mt-3 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors;
+}
+
+.copy-button {
+  @apply text-sm bg-gray-200 hover:bg-gray-300 py-1 px-3 rounded;
+}
+
+.container {
+  @apply mx-auto px-4;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+  
+  .editor-textarea, .result-output {
+    height: 200px;
+  }
+}
