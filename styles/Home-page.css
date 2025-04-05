@@ -43,6 +43,8 @@ h2 {
     max-width: 800px;
     width: 100%;
     margin: 0 auto;
+    justify-items: center; /* Centraliza os itens horizontalmente */
+    align-items: center;  /* Centraliza os itens verticalmente */
 }
 
 .btn {
