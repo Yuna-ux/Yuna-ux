@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import luaparse from 'luaparse';
+const luaparse = require("./bin/luaparse")
 
 export default function Home() {
   const [inputCode, setInputCode] = useState('');
