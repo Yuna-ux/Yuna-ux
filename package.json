@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "next dev",
-    "build": "next build && npm install luaparse",
+    "build": "next build",
     "start": "next start",
-    "vercel-build": "npm install && npm install luaparse && next build"
+    "vercel-build": "npm install && next build"
   },
   "dependencies": {
     "next": "13.4.0",
