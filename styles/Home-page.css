@@ -1,0 +1,115 @@
+:root {
+    --primary-color: #121212;
+    --secondary-color: #ff5733;
+    --hover-color: #ff6f50;
+    --text-color: #ffffff;
+    --button-bg: linear-gradient(45deg, #ff5733, #c70039);
+    --button-hover: linear-gradient(45deg, #ff6f50, #d60042);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    text-align: center;
+    padding: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: bold;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    max-width: 800px;
+    margin: auto;
+}
+
+.btn {
+    background: var(--button-bg);
+    color: var(--text-color);
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.8s ease-in-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:hover {
+    background: var(--button-hover);
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.btn::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.2) 10%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.btn:hover::before {
+    opacity: 1;
+}
+
+.bubble {
+    position: absolute;
+    bottom: -100px;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 1); /* Branco sólido */
+    border-radius: 50%;
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.9); /* Brilho mais forte */
+    animation: floatUp 5s linear infinite, wobble 3s ease-in-out infinite;
+    opacity: 0.9;
+}
+@keyframes floatUp {
+    from {
+        transform: translateY(0);
+        opacity: 0.5;
+    }
+    to {
+        transform: translateY(-100vh);
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
