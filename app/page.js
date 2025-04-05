@@ -1,127 +1,52 @@
-'use client';
-
-import { useState } from 'react'; import styles from '../styles/Home.module.css'; import luaparse from 'luaparse';
+import { useState } from 'react'; import luaparse from 'luaparse';
 
 export default function Home() { const [code, setCode] = useState(''); const [obfuscated, setObfuscated] = useState('');
 
-const generateObfuscatedString = (str) => { const chars = str.split('').map(c => c.charCodeAt(0)); const mathExpr = chars.map(c => (${c - 1} + 1)).join(', '); return (_s(${mathExpr})); };
+const generateObfuscatedString = (str) => { const chars = str.split('').map(c => c.charCodeAt(0)); const mathExpr = chars.map(c => (${c - 1} + 1)).join(', '); return _s(${mathExpr}); };
 
-const obfuscateAST = (ast) => { let counter = 0; const varMap = {}; const globalFuncs = new Set();
+const obfuscateAST = (ast) => { let counter = 0; const varMap = {}; const globalFuncs = new Set(); const junkStatements = [ { type: 'CallStatement', expression: { type: 'CallExpression', base: { type: 'Identifier', name: 'print' }, arguments: [{ type: 'StringLiteral', value: 'junk' }] } }, { type: 'LocalStatement', variables: [{ type: 'Identifier', name: '_junk' + Math.random().toString(36).substr(2, 5) }], init: [{ type: 'NumericLiteral', value: Math.floor(Math.random() * 100) }] } ];
 
-const obfuscateIdentifier = (name) => {
-  if (!varMap[name]) {
-    varMap[name] = `_v${counter++}`;
-  }
-  return varMap[name];
-};
-
-const traverse = (node, parent = null) => {
-  if (!node || typeof node !== 'object') return;
-
-  switch (node.type) {
-    case 'LocalStatement':
-      node.variables.forEach(v => {
-        if (v.type === 'Identifier') {
-          v.name = obfuscateIdentifier(v.name);
-        }
-      });
-      break;
-
-    case 'Identifier':
-      if (parent && parent.type === 'CallExpression' && parent.base === node) {
-        globalFuncs.add(node.name);
-        node.name = obfuscateIdentifier(node.name);
-      } else {
-        node.name = obfuscateIdentifier(node.name);
-      }
-      break;
-
-    case 'FunctionDeclaration':
-      if (node.identifier && node.identifier.type === 'Identifier') {
-        node.identifier.name = obfuscateIdentifier(node.identifier.name);
-      }
-      node.parameters = node.parameters.map(param => {
-        if (param.type === 'Identifier') {
-          param.name = obfuscateIdentifier(param.name);
-        }
-        return param;
-      });
-      break;
-
-    case 'StringLiteral':
-      node.raw = generateObfuscatedString(node.value);
-      break;
-
-    default:
-      break;
-  }
-
-  for (const key in node) {
-    if (Array.isArray(node[key])) {
-      node[key].forEach(n => traverse(n, node));
-    } else {
-      traverse(node[key], node);
-    }
-  }
-};
-
-traverse(ast);
-return { ast, globalFuncs };
-
-};
-
-const generateCode = (astObj) => { const { ast, globalFuncs } = astObj; let code = '';
+const isGlobal = (name) => [
+  '_G','assert','collectgarbage','dofile','error','getmetatable','ipairs','load','loadfile','next','pairs','pcall','print','rawequal','rawget','rawlen','rawset','require','select','setmetatable','tonumber','tostring','type','xpcall','coroutine','debug','io','math','os','package','string','table','utf8'
+].includes(name);
 
 const walk = (node) => {
-  if (!node) return '';
+  if (!node || typeof node !== 'object') return;
+  if (Array.isArray(node)) return node.forEach(walk);
 
-  switch (node.type) {
-    case 'Chunk':
-      return node.body.map(walk).join('\n');
-
-    case 'LocalStatement':
-      return `local ${node.variables.map(walk).join(', ')} = ${node.init.map(walk).join(', ')}`;
-
-    case 'Identifier':
-      return node.name;
-
-    case 'NumericLiteral':
-    case 'StringLiteral':
-      return node.raw;
-
-    case 'FunctionDeclaration':
-      const name = node.identifier ? walk(node.identifier) : '';
-      const params = node.parameters.map(walk).join(', ');
-      const body = node.body.map(walk).join('\n');
-      return `${node.isLocal ? 'local ' : ''}function ${name}(${params})\n${body}\nend`;
-
-    case 'CallStatement':
-      return walk(node.expression);
-
-    case 'CallExpression':
-      return `${walk(node.base)}(${node.arguments.map(walk).join(', ')})`;
-
-    case 'AssignmentStatement':
-      return `${node.variables.map(walk).join(', ')} = ${node.init.map(walk).join(', ')}`;
-
-    case 'ReturnStatement':
-      return `return ${node.arguments.map(walk).join(', ')}`;
-
-    default:
-      return '--[[unsupported node: ' + node.type + ']]';
+  if (node.type === 'Identifier') {
+    const originalName = node.name;
+    if (!isGlobal(originalName)) {
+      if (!varMap[originalName]) {
+        const newName = `_v${counter++}`;
+        varMap[originalName] = newName;
+      }
+      node.name = varMap[originalName];
+    } else {
+      globalFuncs.add(originalName);
+    }
+  } else if (node.type === 'Comment') {
+    node.value = ''; // remove comment
   }
+
+  Object.values(node).forEach(walk);
 };
 
-// Cabeçalho com função anônima para reconstruir strings
-const header = `local function _s(...) local t={...} local r='' for i=1,#t do r=r..string.char(t[i]) end return r end`;
-const globalsAlias = [...globalFuncs].map(fn => `local ${varMap[fn]} = ${fn}`).join('\n');
-const junk = `local _junk = 123 * 456 / 789 + 10`;
+walk(ast);
 
-code = `${header}\n${globalsAlias}\n${junk}\n${walk(ast)}`;
-return code;
+// Inject junk code at the start of the main chunk
+if (ast.body && Array.isArray(ast.body)) {
+  ast.body.unshift(...junkStatements);
+}
+
+return ast;
 
 };
 
-const handleObfuscate = () => { try { const ast = luaparse.parse(code, { comments: false }); const obfuscatedAST = obfuscateAST(ast); const result = generateCode(obfuscatedAST); setObfuscated(result); } catch (err) { console.error(err); setObfuscated('Erro ao processar o código.'); } };
+const handleObfuscate = () => { try { const ast = luaparse.parse(code, { comments: false, luaVersion: '5.1' }); const obfuscatedAst = obfuscateAST(ast); const prelude = local function _s(...) local t={...} for i=1,#t do t[i]=string.char(t[i]) end return table.concat(t) end\n; const obfuscatedCode = prelude + JSON.stringify(obfuscatedAst, null, 2); setObfuscated(obfuscatedCode); } catch (err) { setObfuscated('// Error: ' + err.message); } };
 
-return ( <div className={styles.container}> <h1>Lua Obfuscator com AST</h1> <textarea placeholder="Cole seu código Lua aqui..." value={code} onChange={(e) => setCode(e.target.value)} className={styles.textarea} /> <button onClick={handleObfuscate} className={styles.button}>Obfuscar</button> <h2>Resultado:</h2> <pre className={styles.result}>{obfuscated}</pre> </div> ); }
+return ( <main className="p-4"> <h1 className="text-xl font-bold mb-2">Lua Obfuscator</h1> <textarea className="w-full h-48 border p-2 mb-2" placeholder="Paste Lua code here..." value={code} onChange={(e) => setCode(e.target.value)} ></textarea> <button
+onClick={handleObfuscate}
+className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+> Obfuscate </button> <pre className="bg-gray-100 p-2 whitespace-pre-wrap break-all text-sm"> {obfuscated} </pre> </main> ); }
+
