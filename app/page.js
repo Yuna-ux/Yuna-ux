@@ -1,127 +1,67 @@
 'use client';
-import { useState } from 'react';
-import luaparse from 'luaparse';
-import styles from '../styles/Home.module.css';
 
-const luaGlobals = [
-  "_G", "assert", "collectgarbage", "coroutine", "debug", "dofile", "error",
-  "_ENV", "getmetatable", "io", "ipairs", "load", "loadfile", "math", "next",
-  "os", "package", "pairs", "pcall", "print", "rawequal", "rawget", "rawlen",
-  "rawset", "require", "select", "setmetatable", "string", "table", "tonumber",
-  "tostring", "type", "utf8", "xpcall"
-];
+import React from 'react';
 
-const generateObfuscatedString = (str) => {
-  const chars = str.split('').map(c => c.charCodeAt(0));
-  const mathExpr = chars.map(c => `(${c - 1} + 1)`).join(', ');
-  return `_s(${mathExpr})`;
-};
+const Page = () => {
+  const scripts = {
+    1: `_G.HitboxVisible = false
+        _G.BypassAntiCheatNotification = false
+        _G.HideUserName = true
+        _G.MusicThemeId = 18382734796
 
-const removeComments = (code) => {
-  return code.replace(/--.*(?=\n|$)/g, '').replace(/--\[\[.*?\]\]/gs, '');
-};
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Yuna-ux/Slap-battles/refs/heads/main/Death_glove_V4.lua"))();`,
+    2: `_G.BypassAntiCheatNotification = false
+        _G.HideUserName = true
 
-const addJunkCode = (code) => {
-  const junkSnippets = [
-    "local __x = 1 + 1 - 1",
-    "local __y = math.sqrt(4) * 2 / 2",
-    "local __z = tostring(123456):reverse():reverse()",
-    "local function __junkFunc() return true end",
-    "if false then print('never') end"
-  ];
-  return junkSnippets.join('\n') + '\n' + code + '\n' + junkSnippets.join('\n');
-};
-
-const renameVariables = (ast, globalList) => {
-  let counter = 0;
-  const varMap = {};
-  const traverse = (node) => {
-    if (node == null || typeof node !== 'object') return;
-    if (Array.isArray(node)) { node.forEach(traverse); return; }
-    if (node.type === 'Identifier') {
-      const originalName = node.name;
-      if (!globalList.includes(originalName)) {
-        if (!varMap[originalName]) {
-          varMap[originalName] = 'v_' + (counter++).toString(36);
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Yuna-ux/Slap-battles/refs/heads/main/Slap_aura.lua"))();`,
+    3: `print("Script 3 executed!")`,
+    4: `print("Script 4 executed!")`,
+    5: `CustomTheme = 87540733242308
+        DeathGlove = {
+            HideClients = false,
+            MuteClientSounds = false,
+            HideFEScythe = false,
+            ClientDeathTheme = true,
+            ShowHitboxes = true,
         }
-        node.name = varMap[originalName];
-      }
-    }
-    for (let key in node) traverse(node[key]);
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/DonjoScripts/Public-Scripts/refs/heads/Slap-Battles/death%5B0.8%5D.lua'))();`,
+    6: `loadstring(game:HttpGet(("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"),true))();`,
+    7: `loadstring(game:HttpGet(("https://raw.githubusercontent.com/Yuna-ux/Other-scripts/refs/heads/main/dex.lua"))();`,
+    8: `loadstring(game:HttpGet(("https://raw.githubusercontent.com/Yuna-ux/Slap-battles/refs/heads/main/HTTPSPY_V2_.lua"))();`,
+    9: `print("Script 9 executed!")`,
+    10: `print("Script 10 executed!")`,
+    11: `print("Script 11 executed!")`,
+    12: `print("Script 12 executed!")`,
+    13: `print("Script 13 executed!")`,
+    14: `print("Script 14 executed!")`,
+    15: `print("Script 15 executed!")`,
+    16: `print("Script 16 executed!")`,
   };
-  traverse(ast);
-  return ast;
-};
 
-const generateLuaCodeFromAST = (node) => {
-  if (!node) return '';
-  switch(node.type) {
-    case 'Chunk': return node.body.map(generateLuaCodeFromAST).join('\n');
-    case 'LocalStatement':
-      const vars = node.variables.map(generateLuaCodeFromAST).join(', ');
-      const inits = node.init ? node.init.map(generateLuaCodeFromAST).join(', ') : '';
-      return `local ${vars}${inits ? ' = ' + inits : ''}`;
-    case 'Identifier': return node.name;
-    case 'StringLiteral': return `\"${node.value}\"`;
-    case 'NumericLiteral': return node.value.toString();
-    case 'CallStatement': return generateLuaCodeFromAST(node.expression);
-    case 'CallExpression':
-      const base = generateLuaCodeFromAST(node.base);
-      const args = node.arguments.map(generateLuaCodeFromAST).join(', ');
-      return `${base}(${args})`;
-    case 'FunctionDeclaration':
-      const funcName = node.identifier ? generateLuaCodeFromAST(node.identifier) : '';
-      const params = node.parameters.map(generateLuaCodeFromAST).join(', ');
-      const body = node.body.map(generateLuaCodeFromAST).join('\n');
-      return `${node.isLocal ? 'local ' : ''}function ${funcName}(${params})\n${body}\nend`;
-    case 'AssignmentStatement':
-      const left = node.variables.map(generateLuaCodeFromAST).join(', ');
-      const right = node.init.map(generateLuaCodeFromAST).join(', ');
-      return `${left} = ${right}`;
-    case 'ReturnStatement':
-      return `return ${node.arguments.map(generateLuaCodeFromAST).join(', ')}`;
-    default:
-      return '--[[unsupported node: ' + node.type + ']]';
-  }
-};
-
-const antiDebug = () => {
-  if (window.console && window.console.firebug) {
-    throw new Error("Debugging is disabled");
-  }
-  let start = Date.now();
-  debugger;
-  let end = Date.now();
-  if (end - start > 100) {
-    throw new Error("Debugger detected");
-  }
-};
-
-export default function Home() {
-  const [code, setCode] = useState('');
-  const [obfuscated, setObfuscated] = useState('');
-
-  const handleObfuscate = () => {
-    try {
-      antiDebug();
-      const cleanCode = removeComments(code);
-      const codeWithJunk = addJunkCode(cleanCode);
-      const ast = luaparse.parse(codeWithJunk, { comments: false, luaVersion: '5.1' });
-      const obfAst = renameVariables(ast, luaGlobals);
-      const generatedLua = generateLuaCodeFromAST(obfAst);
-      const prelude = "local function _s(...) local t={...} for i=1,#t do t[i]=string.char(t[i]) end return table.concat(t) end\n";
-      setObfuscated(prelude + generatedLua);
-    } catch (e) {
-      setObfuscated("-- Error: " + e.message);
-    }
+  const copyText = (index) => {
+    navigator.clipboard.writeText(scripts[index]).then(() => {
+      alert(`Script ${index} copied to clipboard!`);
+    }).catch((err) => {
+      console.error('Failed to copy:', err);
+    });
   };
 
   return (
-    <main className={styles.container}>
-      <h1>Lua Obfuscator</h1>
-      <textarea className={styles.textarea} value={code} onChange={e => setCode(e.target.value)} placeholder="Paste Lua code here..." />
-      <button className={styles.button} onClick={handleObfuscate}>Obfuscate</button>
-      <pre className={styles.result}>{obfuscated}</pre>
-    </main>
+    <div className="container">
+      <h2>Copy Scripts</h2>
+      <div className="btn-container">
+        <button className="btn" onClick={() => copyText(1)}>Death Glove Script</button>
+        <button className="btn" onClick={() => copyText(2)}>Slap Aura Script</button>
+        <button className="btn" onClick={() => copyText(3)}>EdgeLord</button>
+        <button className="btn" onClick={() => copyText(4)}>Funax Hub</button>
+        <button className="btn" onClick={() => copyText(5)}>Donjo Death Glove</button>
+        <button className="btn" onClick={() => copyText(6)}>Infinite Yield</button>
+        <button className="btn" onClick={() => copyText(7)}>Dex</button>
+        <button className="btn" onClick={() => copyText(8)}>Http Spy V2</button>
+      </div>
+      <h2>Yuna-ux Scripts!</h2>
+    </div>
   );
-}
+};
+
+export default Page;
