@@ -19,6 +19,10 @@ body {
     color: var(--text-color);
     text-align: center;
     padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     overflow: hidden;
     position: relative;
 }
@@ -37,7 +41,8 @@ h2 {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 15px;
     max-width: 800px;
-    margin: auto;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .btn {
@@ -93,6 +98,7 @@ h2 {
     animation: floatUp 5s linear infinite, wobble 3s ease-in-out infinite;
     opacity: 0.9;
 }
+
 @keyframes floatUp {
     from {
         transform: translateY(0);
