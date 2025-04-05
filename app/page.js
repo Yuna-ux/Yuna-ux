@@ -107,7 +107,7 @@ const Page = () => {
 
   return (
     <div className="container">
-      <h2>Copiar Scripts</h2>
+      <h2>Copy Scripts</h2>
       <div className="button-container">
         {Object.keys(scripts).map((key) => (
           scripts[key].code ? (
