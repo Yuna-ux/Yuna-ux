@@ -1,4 +1,4 @@
-import './style/style.css';
+import '../styles/Home.module.css';
 
 export default function RootLayout({ children }) {
   return (
