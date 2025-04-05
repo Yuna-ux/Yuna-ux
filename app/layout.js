@@ -3,7 +3,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <link rel="stylesheet" href="/style.css" />
-        <title>Proxy PAC Access</title>
+        <title>Obfuscator</title>
       </head>
       <body>{children}</body>
     </html>
