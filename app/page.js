@@ -1,8 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 
 const Page = () => {
+  const [copyMessage, setCopyMessage] = useState('');
+  
   const scripts = {
     1: {
       name: "Funax Hub",
@@ -33,14 +35,14 @@ const Page = () => {
     5: {
       name: "Death Custom Glove Script Mojjos",
       code: `CustomTheme = 87540733242308
-        DeathGlove = {
-            HideClients = false,
-            MuteClientSounds = false,
-            HideFEScythe = false,
-            ClientDeathTheme = true,
-            ShowHitboxes = true,
-        }
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/DonjoScripts/Public-Scripts/refs/heads/Slap-Battles/death%5B0.8%5D.lua'))();`,
+            DeathGlove = {
+                HideClients = false,
+                MuteClientSounds = false,
+                HideFEScythe = false,
+                ClientDeathTheme = true,
+                ShowHitboxes = true,
+            }
+            loadstring(game:HttpGet('https://raw.githubusercontent.com/DonjoScripts/Public-Scripts/refs/heads/Slap-Battles/death%5B0.8%5D.lua'))();`,
     },
     6: {
       name: "Infinite Yield",
@@ -69,7 +71,7 @@ const Page = () => {
     },
     11: {
       name: "Killstreak Farm Script",
-      code: `loadstring(game:HttpGet("https://raw.githubusercontent.com/IncognitoScripts/SlapBattles/refs/heads/main/KillstreakFarm"))();`,                        
+      code: `loadstring(game:HttpGet("https://raw.githubusercontent.com/IncognitoScripts/SlapBattles/refs/heads/main/KillstreakFarm"))();`,
     },
     12: {
       name: "Fling All Script",
@@ -97,23 +99,19 @@ const Page = () => {
     const script = scripts[index];
     navigator.clipboard.writeText(script.code).then(() => {
       setCopyMessage(`Script "${script.name}" copied to clipboard!`);
-      setTimeout(() => setCopyMessage(''), 3000); // Clear message after 3 seconds
+      setTimeout(() => setCopyMessage(''), 3000);
     }).catch(err => {
-      console.error('Failed to copy:', err);
+      console.error('Error to Copy:', err);
     });
   };
 
   return (
     <div className="container">
-      <h2>Copy Scripts</h2>
+      <h2>Copiar Scripts</h2>
       <div className="button-container">
         {Object.keys(scripts).map((key) => (
           scripts[key].code ? (
-            <button
-              key={key}
-              className="btn"
-              onClick={() => copyText(key)}
-            >
+            <button key={key} className="btn" onClick={() => copyText(key)}>
               {scripts[key].name}
             </button>
           ) : null
