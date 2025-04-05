@@ -1,95 +1,136 @@
-'use client';
-
 import { useState } from 'react';
-const luaparse = require('luaparse');
+import styles from '../styles/style.css';
+import luaparse from 'luaparse';
 
 export default function Home() {
-  const [inputCode, setInputCode] = useState('');
-  const [outputCode, setOutputCode] = useState('');
-  const [isObfuscated, setIsObfuscated] = useState(false);
-
-  const obfuscateCode = () => {
-    try {
-      const ast = luaparse.parse(inputCode);
-      const obfuscated = obfuscateAST(ast);
-      setOutputCode(obfuscated);
-      setIsObfuscated(true);
-    } catch (error) {
-      alert(`Erro ao obfuscar: ${error.message}`);
-    }
-  };
+  const [code, setCode] = useState('');
+  const [obfuscated, setObfuscated] = useState('');
 
   const obfuscateAST = (ast) => {
-    // Técnica de ofuscação: substituição de nomes
-    const nameMap = {};
     let counter = 0;
-    
-    function generateName() {
-      return `_${(counter++).toString(36)}`;
-    }
+    const varMap = {};
 
-    function processNode(node) {
-      if (!node) return;
-      
-      if (node.type === 'Identifier') {
-        if (!nameMap[node.name]) {
-          nameMap[node.name] = generateName();
-        }
-        node.name = nameMap[node.name];
+    const obfuscateIdentifier = (name) => {
+      if (!varMap[name]) {
+        varMap[name] = `_v${counter++}`;
       }
-      
+      return varMap[name];
+    };
+
+    const traverse = (node) => {
+      if (!node || typeof node !== 'object') return;
+
+      switch (node.type) {
+        case 'LocalStatement':
+          node.variables.forEach(v => {
+            if (v.type === 'Identifier') {
+              v.name = obfuscateIdentifier(v.name);
+            }
+          });
+          break;
+        case 'Identifier':
+          node.name = obfuscateIdentifier(node.name);
+          break;
+        case 'FunctionDeclaration':
+          if (node.identifier && node.identifier.type === 'Identifier') {
+            node.identifier.name = obfuscateIdentifier(node.identifier.name);
+          }
+          node.parameters = node.parameters.map(param => {
+            if (param.type === 'Identifier') {
+              param.name = obfuscateIdentifier(param.name);
+            }
+            return param;
+          });
+          break;
+        default:
+          break;
+      }
+
       for (const key in node) {
-        if (typeof node[key] === 'object') {
-          processNode(node[key]);
+        if (Array.isArray(node[key])) {
+          node[key].forEach(traverse);
+        } else {
+          traverse(node[key]);
         }
       }
-    }
-    
-    processNode(ast);
-    return JSON.stringify(ast, null, 2);
+    };
+
+    traverse(ast);
+    return ast;
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(outputCode);
-    alert('Código copiado!');
+  const generateCode = (ast) => {
+    // Simples gerador de código a partir do AST
+    let code = '';
+    const walk = (node) => {
+      if (!node) return '';
+
+      switch (node.type) {
+        case 'Chunk':
+          return node.body.map(walk).join('\n');
+
+        case 'LocalStatement':
+          return `local ${node.variables.map(walk).join(', ')} = ${node.init.map(walk).join(', ')}`;
+
+        case 'Identifier':
+          return node.name;
+
+        case 'NumericLiteral':
+        case 'StringLiteral':
+          return node.raw;
+
+        case 'FunctionDeclaration':
+          const name = node.identifier ? walk(node.identifier) : '';
+          const params = node.parameters.map(walk).join(', ');
+          const body = node.body.map(walk).join('\n');
+          const end = 'end';
+          return `${node.isLocal ? 'local ' : ''}function ${name}(${params})\n${body}\n${end}`;
+
+        case 'CallStatement':
+          return walk(node.expression);
+
+        case 'CallExpression':
+          return `${walk(node.base)}(${node.arguments.map(walk).join(', ')})`;
+
+        case 'AssignmentStatement':
+          return `${node.variables.map(walk).join(', ')} = ${node.init.map(walk).join(', ')}`;
+
+        case 'ReturnStatement':
+          return `return ${node.arguments.map(walk).join(', ')}`;
+
+        default:
+          return '--[[unsupported node: ' + node.type + ']]';
+      }
+    };
+
+    code = walk(ast);
+    return code;
+  };
+
+  const handleObfuscate = () => {
+    try {
+      const ast = luaparse.parse(code, { comments: false });
+      const obfuscatedAST = obfuscateAST(ast);
+      const result = generateCode(obfuscatedAST);
+      setObfuscated(result);
+    } catch (err) {
+      console.error(err);
+      setObfuscated('Erro ao processar o código.');
+    }
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="editor-container">
-          <h2 className="editor-title">Código Lua Original</h2>
-          <textarea
-            className="editor-textarea"
-            value={inputCode}
-            onChange={(e) => setInputCode(e.target.value)}
-            placeholder="Cole seu código Lua aqui..."
-          />
-          <button
-            onClick={obfuscateCode}
-            className="obfuscate-button"
-          >
-            Obfuscar Código
-          </button>
-        </div>
-
-        <div className="result-container">
-          <div className="result-header">
-            <h2 className="result-title">Código Obfuscado</h2>
-            {isObfuscated && (
-              <button
-                onClick={copyToClipboard}
-                className="copy-button"
-              >
-                Copiar
-              </button>
-            )}
-          </div>
-          <pre className="result-output">
-            {outputCode || 'O resultado obfuscado aparecerá aqui...'}
-          </pre>
-        </div>
-      </div>
+    <div className={styles.container}>
+      <h1>Lua Obfuscator com AST</h1>
+      <textarea
+        placeholder="Cole seu código Lua aqui..."
+        value={code}
+        onChange={(e) => setCode(e.target.value)}
+        className={styles.textarea}
+      />
+      <button onClick={handleObfuscate} className={styles.button}>Obfuscar</button>
+      <h2>Resultado:</h2>
+      <pre className={styles.result}>{obfuscated}</pre>
     </div>
   );
 }
