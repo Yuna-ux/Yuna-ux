@@ -61,35 +61,35 @@ const Page = () => {
     },
     9: {
       name: "Grapple Super Chasher Script",
-      code: `loadstring(game:HttpGet("https://raw.githubusercontent.com/DonjoScripts/Public-Scripts/refs/heads/Slap-Battles/SuperCrasher!!!Uwa!SoLag%3Askull%3ADontAskWhyISTheLinkSoLongLol%2CILikeItAlsoRememeberYouHaveToEquipGrappleToUseThisScript%3E-%3C")();
+      code: `loadstring(game:HttpGet("https://raw.githubusercontent.com/DonjoScripts/Public-Scripts/refs/heads/Slap-Battles/SuperCrasher!!!Uwa!SoLag%3Askull%3ADontAskWhyISTheLinkSoLongLol%2CILikeItAlsoRememeberYouHaveToEquipGrappleToUseThisScript%3E-%3C")());`,
     },
     10: {
       name: "Mace Mastery Abuser Script",
-      code: `loadstring(game:HttpGet(("https://raw.githubusercontent.com/DonjoScripts/Public-Scripts/refs/heads/Slap-Battles/Mace-Mastery.lua"), true))();`
+      code: `loadstring(game:HttpGet(("https://raw.githubusercontent.com/DonjoScripts/Public-Scripts/refs/heads/Slap-Battles/Mace-Mastery.lua"), true))();`,
     },
     11: {
-      name: "Killsreak Farm Script",
-      code: `loadstring(game:HttpGet("https://raw.githubusercontent.com/IncognitoScripts/SlapBattles/refs/heads/main/KillstreakFarm"))();`                        
+      name: "Killstreak Farm Script",
+      code: `loadstring(game:HttpGet("https://raw.githubusercontent.com/IncognitoScripts/SlapBattles/refs/heads/main/KillstreakFarm"))();`,                        
     },
     12: {
       name: "Fling All Script",
-      code: `loadstring(game:HttpGet("https://raw.githubusercontent.com/Yuna-ux/Other-scripts/refs/heads/main/Fe_Fling_ALL_Script.lua")`,
+      code: `loadstring(game:HttpGet("https://raw.githubusercontent.com/Yuna-ux/Other-scripts/refs/heads/main/Fe_Fling_ALL_Script.lua"))();`,
     },
     13: {
       name: "Octo~Spy - Remote Event Spy",
-      code: `loadstring("https://raw.githubusercontent.com/InfernusScripts/Octo-Spy/refs/heads/main/Main.lua")()`,
+      code: `loadstring("https://raw.githubusercontent.com/InfernusScripts/Octo-Spy/refs/heads/main/Main.lua")();`,
     },
     14: {
       name: "Unc Checker GUI Version",
-      code: `loadstring(game:HttpGet("https://raw.githubusercontent.com/Yuna-ux/Other-scripts/refs/heads/main/UNChecker_GUI_Version.lua"))()`,
+      code: `loadstring(game:HttpGet("https://raw.githubusercontent.com/Yuna-ux/Other-scripts/refs/heads/main/UNChecker_GUI_Version.lua"))();`,
     },
     15: {
       name: "Super Ring Parts V6 Script",
-      code: `loadstring(game:HttpGet("https://raw.githubusercontent.com/Yuna-ux/Other-scripts/refs/heads/main/Super_Ring_Parts_V6.lua"))()`,
+      code: `loadstring(game:HttpGet("https://raw.githubusercontent.com/Yuna-ux/Other-scripts/refs/heads/main/Super_Ring_Parts_V6.lua"))();`,
     },
     16: {
       name: "Rael Hub - Brookhaven Script",
-      code: `loadstring(game:HttpGet(("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"), true))()`,
+      code: `loadstring(game:HttpGet(("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"), true))();`,
     },
   };
 
