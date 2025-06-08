@@ -1,4 +1,4 @@
-import '../styles/Home-page.css';
+// import '../styles/Home-page.css';
 
 const Layout = ({ children }) => {
     return (
