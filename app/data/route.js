@@ -5,6 +5,7 @@ export async function GET() {
     timestamp: Date.now()
   };
   
+  // Fixed JSON stringification (removed extra parenthesis)
   return new Response(JSON.stringify(data), {
     headers: { 
       'Content-Type': 'application/json',
