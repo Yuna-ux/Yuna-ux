@@ -1,3 +1,5 @@
+import 'layout.js';
+
 export default function Home() {
   return (
     <\div>
