@@ -16,7 +16,7 @@ export default function Home() {
           <br />
           {`local data = game:GetService("HttpService"):JSONDecode(response)`}
           <br />
-          {`print(data.data) -- Retornará: 191816425`}
+          {`print(data.data)`}
         </code>
       </div>
 
