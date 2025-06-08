@@ -4,9 +4,11 @@ import React from 'react';
 
 const SimpleNumberPage = () => {
   return (
-    <div>
-      191816425
-    </div>
+    {
+        "data": 191816425,
+        "status": "success",
+        "timestamp": 1234567890
+    }
   );
 };
 
