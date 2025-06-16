@@ -1,16 +1,16 @@
-// import '../styles/Home-page.css';
+export const metadata = {
+  title: 'Lua Remote Executor',
+  description: 'Execute Lua code remotely in Roblox',
+}
 
-const Layout = ({ children }) => {
-    return (
-        <html lang="en">
-            <head>
-                <meta charSet="UTF-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>Hello World Site</title>
-            </head>
-            <body>{children}</body>
-        </html>
-    );
-};
-
-export default Layout;
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body className="bg-gray-900 text-white">
+        <main className="container mx-auto p-4">
+          {children}
+        </main>
+      </body>
+    </html>
+  )
+}
