@@ -1,8 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import CodeEditor from '../components/CodeEditor'
-import UserList from '../components/UserList'
+import CodeEditor from './components/CodeEditor'
+import UserList from './components/UserList'
 
 export default function ExecutorPage() {
   const [code, setCode] = useState('print("Hello from WebExecutor!")')
