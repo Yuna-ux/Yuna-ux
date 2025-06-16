@@ -1,33 +1,18 @@
 'use client'
 import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { useSession } from 'next-auth/react'
-import AuthButton from '../components/AuthButton'
+import CodeEditor from '../components/CodeEditor'
 import UserList from '../components/UserList'
 
-const CodeEditor = dynamic(() => import('../components/CodeEditor'), { 
-  ssr: false,
-  loading: () => <div className="bg-gray-800 h-96 rounded animate-pulse"></div>
-})
-
 export default function Home() {
-  const { data: session } = useSession()
-  const [code, setCode] = useState('print("Hello from web!")')
-  const [output, setOutput] = useState([])
-  const [selectedUser, setSelectedUser] = useState(null)
+  const [code, setCode] = useState('print("Hello World!")')
   const [users, setUsers] = useState([])
+  const [selectedUser, setSelectedUser] = useState(null)
+  const [password, setPassword] = useState('')
+  const [output, setOutput] = useState([])
 
   useEffect(() => {
-    if (!session) return
-
     const ws = new WebSocket(`wss://${window.location.host}/api/ws`)
-
-    ws.onopen = () => {
-      ws.send(JSON.stringify({
-        type: 'auth',
-        token: session.user.id
-      }))
-    }
 
     ws.onmessage = (e) => {
       const data = JSON.parse(e.data)
@@ -36,64 +21,62 @@ export default function Home() {
     }
 
     return () => ws.close()
-  }, [session])
+  }, [])
 
   const executeCode = () => {
-    if (!selectedUser || !code.trim()) return
+    if (!selectedUser || !password) return
+    
     const ws = new WebSocket(`wss://${window.location.host}/api/ws`)
     ws.onopen = () => {
       ws.send(JSON.stringify({
         type: 'execute',
-        code: code,
+        code,
         target: selectedUser,
-        token: session.user.id
+        password
       }))
     }
   }
 
-  if (!session) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen">
-        <h1 className="text-4xl mb-8">Lua Remote Executor</h1>
-        <AuthButton />
-      </div>
-    )
-  }
-
   return (
-    <>
-      <header className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl">Welcome, {session.user.name}</h1>
-        <AuthButton />
-      </header>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1">
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl mb-4">Lua Remote Executor</h1>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="md:col-span-1">
+          <div className="mb-4">
+            <label className="block mb-2">Senha de Proteção:</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-2 border rounded"
+            />
+          </div>
           <UserList 
             users={users} 
-            onSelect={setSelectedUser} 
+            onSelect={setSelectedUser}
             selected={selectedUser}
           />
         </div>
 
-        <div className="lg:col-span-2">
+        <div className="md:col-span-2">
           <CodeEditor value={code} onChange={setCode} />
           
           <button
             onClick={executeCode}
-            disabled={!selectedUser}
-            className="mt-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-4 py-2 rounded"
+            disabled={!selectedUser || !password}
+            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-400"
           >
-            Execute for {selectedUser || '...'}
+            Executar para {selectedUser || '...'}
           </button>
 
-          <div className="mt-6 bg-black p-4 rounded h-48 overflow-y-auto">
-            {output.map((line, i) => (
-              <pre key={i} className="text-green-400">{line}</pre>
+          <div className="mt-4 bg-black p-4 rounded">
+            {output.map((msg, i) => (
+              <pre key={i} className="text-green-400">{msg}</pre>
             ))}
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
-              }
+}
