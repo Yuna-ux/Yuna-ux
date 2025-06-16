@@ -67,22 +67,17 @@ export default function ExecutorPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="bg-gray-800 p-4 rounded-lg">
-        <div className="flex items-center space-x-4 mb-4">
-          <div className="flex items-center">
-            <div className={`h-3 w-3 rounded-full mr-2 ${
-              connectionStatus === 'connected' ? 'bg-green-500' : 
-              connectionStatus === 'error' ? 'bg-red-500' : 'bg-yellow-500'
-            }`} />
-            <span className="text-sm">
-              {connectionStatus === 'connected' ? 'Conectado' : 
-               connectionStatus === 'error' ? 'Erro de conexão' : 'Desconectado'}
-            </span>
-          </div>
+    <div className="executor-container">
+      <div className="control-panel">
+        <div className="connection-status-bar">
+          <div className={`status-indicator ${connectionStatus}`} />
+          <span className="status-text">
+            {connectionStatus === 'connected' ? 'Conectado' : 
+             connectionStatus === 'error' ? 'Erro de conexão' : 'Desconectado'}
+          </span>
           
-          <div className="flex-1">
-            <label htmlFor="password" className="block text-sm font-medium mb-1">
+          <div className="password-input-container">
+            <label htmlFor="password" className="password-label">
               Senha de Execução
             </label>
             <input
@@ -90,14 +85,14 @@ export default function ExecutorPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm"
+              className="password-input"
               placeholder="Digite a senha de segurança"
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1">
+        <div className="executor-grid">
+          <div className="user-list-container">
             <UserList 
               users={users} 
               onSelect={setSelectedUser}
@@ -105,41 +100,44 @@ export default function ExecutorPage() {
             />
           </div>
 
-          <div className="lg:col-span-2 space-y-4">
+          <div className="code-execution-container">
             <CodeEditor value={code} onChange={setCode} />
             
-            <div className="flex space-x-3">
+            <div className="action-buttons">
               <button
                 onClick={executeCode}
                 disabled={!selectedUser || !password}
-                className={`px-4 py-2 rounded text-sm font-medium ${
-                  !selectedUser || !password ? 'bg-gray-600 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-                }`}
+                className={`execute-button ${!selectedUser || !password ? 'disabled' : ''}`}
               >
                 Executar para {selectedUser || '...'}
               </button>
               
               <button
                 onClick={clearOutput}
-                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded text-sm font-medium"
+                className="clear-button"
               >
                 Limpar Saída
               </button>
             </div>
 
-            <div className="bg-black p-4 rounded-lg h-64 overflow-y-auto">
-              <h3 className="text-sm font-mono mb-2 text-gray-400">Saída:</h3>
+            <div className="output-console">
+              <h3 className="output-title">Saída:</h3>
               {output.length > 0 ? (
-                output.map((msg, i) => (
-                  <pre key={i} className={`text-sm font-mono mb-1 ${
-                    msg.includes('✅') ? 'text-green-400' : 
-                    msg.includes('❌') ? 'text-red-400' : 'text-gray-300'
-                  }`}>
-                    {msg}
-                  </pre>
-                ))
+                <div className="output-content">
+                  {output.map((msg, i) => (
+                    <pre 
+                      key={i} 
+                      className={`output-line ${
+                        msg.includes('✅') ? 'success' : 
+                        msg.includes('❌') ? 'error' : 'default'
+                      }`}
+                    >
+                      {msg}
+                    </pre>
+                  ))}
+                </div>
               ) : (
-                <p className="text-gray-500 text-sm">Nenhuma saída ainda</p>
+                <p className="empty-output">Nenhuma saída ainda</p>
               )}
             </div>
           </div>
