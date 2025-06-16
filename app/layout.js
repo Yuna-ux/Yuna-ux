@@ -11,22 +11,30 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body className="bg-gray-900 text-gray-100 font-sans">
-        <main className="min-h-screen p-4 max-w-7xl mx-auto">
-          <header className="mb-8 border-b border-gray-700 pb-4">
-            <h1 className="text-3xl font-bold text-blue-400">Lua Web Executor</h1>
-            <p className="text-gray-400">Controle remoto via WebSocket</p>
+      <body className="app-body">
+        <div className="app-container">
+          <header className="app-header">
+            <div className="header-content">
+              <h1 className="app-title">Lua Web Executor</h1>
+              <p className="app-subtitle">Controle remoto via WebSocket</p>
+            </div>
           </header>
           
-          {children}
+          <main className="app-main">
+            {children}
+          </main>
 
-          <footer className="mt-12 border-t border-gray-800 pt-4 text-sm text-gray-500">
-            <p>Sistema seguro - Conexões criptografadas</p>
-            <p className="mt-1">Senha de proteção ativada</p>
+          <footer className="app-footer">
+            <div className="footer-content">
+              <p className="security-info">
+                <span className="security-icon">🔒</span> Sistema seguro - Conexões criptografadas
+              </p>
+              <p className="password-info">Senha de proteção ativada</p>
+            </div>
           </footer>
-        </main>
+        </div>
       </body>
     </html>
   )
