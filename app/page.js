@@ -1,18 +1,10 @@
 // app/page.js
-import { headers } from 'next/headers'
-
-function debugmsg() {
-  console.log("Returning IP...")
-}
-
 export default function Home() {
-  debugmsg()
-  const forwardedFor = headers().get('x-forwarded-for')
-  const ip = forwardedFor?.split(',')[0].trim() || 'IP not found.'
-
   return (
-    <pre>
-      {JSON.stringify({ ip }, null, 2)}
-    </pre>
+    <main style={{ padding: 20, fontFamily: 'Arial, sans-serif' }}>
+      <h1>Welcome to my IP website</h1>
+      <p>This site returns your public IP in the route <code>/v1</code> in JSON format.</p>
+      <p>Exemplo: <code>https://yuna-ux/vercel.app/v1</code></p>
+    </main>
   )
 }
