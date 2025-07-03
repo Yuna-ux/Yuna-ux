@@ -7,5 +7,9 @@ export function GET(request) {
 
   console.log('Returning IP:', ip)
 
-  return NextResponse.json({ ip })
+  return NextResponse.json({
+    ip,
+    hora: new Date().toISOString(),
+    userAgent: request.headers.get('user-agent')
+  })
 }
