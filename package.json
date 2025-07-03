@@ -1,6 +1,8 @@
 {
   "name": "yuna-ux",
   "version": "1.0.0",
+  "description": "Yuna-ux Project",
+  "author": "Yuna-ux"
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -8,7 +10,7 @@
     "vercel-build": "npm install && next build"
   },
   "dependencies": {
-    "next": "13.4.0",
+    "next": "15.3.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "ws": "^8.13.0"
