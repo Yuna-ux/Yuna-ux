@@ -1,17 +1,12 @@
-// app/page.js
-export default function Home() {
-  return (
-    <main style={{ padding: 20, fontFamily: 'Arial, sans-serif' }}>
-      <h1>Welcome to my IP website</h1>
-      <p>
-        This site returns your public IP in the route <code>/v1</code> in JSON format.
-      </p>
-      <p>
-        Example: <code>https://yuna-ux.vercel.app/v1</code>
-      </p>
-      <p>
-        Example 2: <code>https://yuna-ux.vercel.app/v2</code>
-      </p>
-    </main>
-  );
+// app/en-US/route.js
+import { NextResponse } from 'next/server'
+
+export async function GET(request) {
+  const { pathname } = request.nextUrl
+
+  if (pathname === '/') {
+    return NextResponse.redirect(new URL('/en-US', request.url))
+  }
+
+  return NextResponse.next()
 }
