@@ -1,8 +1,8 @@
 // import '../styles/home-style.css'
 // app/layout.js
 export const metadata = {
-  title: 'IP JSON',
-  description: 'Retorna o IP como JSON',
+  title: 'IP INFO',
+  description: 'Returns the IP in a Json table',
 }
 
 export default function RootLayout({ children }) {
