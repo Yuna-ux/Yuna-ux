@@ -9,7 +9,5 @@ export function GET(request) {
 
   return NextResponse.json({
     ip,
-    hora: new Date().toISOString(),
-    userAgent: request.headers.get('user-agent')
   })
 }
