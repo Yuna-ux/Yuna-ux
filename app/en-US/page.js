@@ -7,7 +7,7 @@ export default function Home() {
         This site returns your public IP in the route <code>/v1</code> in JSON format.
       </p>
       <p>
-        Example: <code>https://yuna-ux.vercel.app/v1</code>
+        Example: <a href=https://ip-info-json.vercel.app/v1"">GET IP</a>
       </p>
     </main>
   );
