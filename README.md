@@ -17,8 +17,8 @@ I am proficient in the following programming languages and technologies:
 --------------------------------------
 Additionally, I create **Roblox Executors** and work with custom scripting for Roblox games.
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Csharp_Logo.png" width="70" height="70"/>
-<img src="https://th.bing.com/th/id/OIP.U98DuCVju2WxzisnFWiGQwHaHa?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3" width="70" height="70"/>
+<img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Csharp_Logo.png" width="100" height="100"/>
+<img src="https://lua.org/images/luaa.gif" width="70" height="70"/>
 
 # Example codes:
 
