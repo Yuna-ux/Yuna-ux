@@ -20,7 +20,7 @@ Additionally, I create **Roblox Executors** and work with custom scripting for R
 <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Csharp_Logo.png" width="70" height="70"/>
 <img src="https://th.bing.com/th/id/OIP.U98DuCVju2WxzisnFWiGQwHaHa?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3" width="70" height="70"/>
 
-# Lua & Luau example codes:
+# Example codes:
 
 ``` lua
 for i, v in ipairs(game:GetService("Players"):GetPlayers()) do
@@ -41,7 +41,11 @@ end
 console.Writeline("Hello from C#!");
 ```
 ``` Java
-for (int i = 1; i <= 100; i++) {
-    System.out.println(i + "Java is the best!");
+public class Main {
+    public static void main(String[] args) {
+        for (int i = 1; i <= 100; i++) {
+            System.out.println(i + "Java is the best!");
+        }
+    }
 }
 ```
