@@ -1,6 +1,7 @@
-# Programming Languages
-
 My name is **Rafael**
+I am brazilian developer.
+
+# Programming Languages
 
 I am proficient in the following programming languages and technologies:
 --------------------------------------
@@ -40,7 +41,7 @@ end
 console.Writeline("Hello from C#!");
 ```
 ``` Java
-    for (int i = 1; i <= 100; i++) {
-        System.out.println(i + "Java is the best!");
-    }
+for (int i = 1; i <= 100; i++) {
+    System.out.println(i + "Java is the best!");
+}
 ```
