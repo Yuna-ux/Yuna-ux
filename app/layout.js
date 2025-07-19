@@ -13,16 +13,15 @@ export const metadata = {
   openGraph: {
     title: 'IP Info',
     description: 'Returns the IP in a JSON table',
-    url: 'https://yuna-ux.vercel.app',
+    url: 'https://ip-info-json.vercel.app/',
     siteName: 'Yuna UX',
     locale: 'en-US',
     type: 'website',
   },
   alternates: {
-    canonical: 'https://yuna-ux.vercel.app',
+    canonical: 'https://ip-info-json.vercel.app/',
     languages: {
-      'pt-BR': 'https://yuna-ux.vercel.app/pt-BR',
-      'en-US': 'https://yuna-ux.vercel.app/en-US',
+      'en-US': 'https://ip-info-json.vercel.app/en-US',
     },
   },
 }
