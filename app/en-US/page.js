@@ -9,9 +9,6 @@ export default function Home() {
       <p>
         Example: <code>https://yuna-ux.vercel.app/v1</code>
       </p>
-      <p>
-        Example 2: <code>https://yuna-ux.vercel.app/v2</code>
-      </p>
     </main>
   );
 }
