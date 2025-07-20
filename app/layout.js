@@ -14,7 +14,7 @@ export const metadata = {
     title: 'IP Info',
     description: 'Returns the IP in a JSON table',
     url: 'https://ip-info-json.vercel.app/',
-    siteName: 'Yuna UX',
+    siteName: 'ip-info-json',
     locale: 'en-US',
     type: 'website',
   },
