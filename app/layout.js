@@ -52,7 +52,7 @@ export default function RootLayout({ children }) {
           rel="preload"
           href="/fonts/LilitaOne-Regular.ttf"
           as="font"
-          type="font/woff2"
+          type="font/ttf"
           crossOrigin="anonymous"
         />
       </head>
