@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import IPDisplay from '../../components/IPDisplay';
+import IPDisplay from '../components/IPDisplay';
 import '../styles/home-style.css';
 
 export default function Home() {
