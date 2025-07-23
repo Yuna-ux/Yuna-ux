@@ -50,7 +50,7 @@ export default function RootLayout({ children }) {
         <meta name="theme-color" content="#6d28d9" />
         <link
           rel="preload"
-          href="/fonts/inter-var.woff2"
+          href="/fonts/LilitaOne-Regular.ttf"
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"
