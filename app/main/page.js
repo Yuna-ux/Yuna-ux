@@ -1,4 +1,4 @@
-// app/main/pages.js
+// app/main/page.js
 import Link from 'next/link';
 import '../styles/home-style.css';
 
