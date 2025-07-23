@@ -1,9 +1,9 @@
 // import '../styles/home-style.css'
 // app/layout.js
 export const metadata = {
-  title: 'IP Info',
-  description: 'Returns the IP in a JSON table',
-  keywords: ['IP', 'Next.js', 'API'],
+  title: 'Yuna-ux Scripts',
+  description: 'site was made for roblox scripts and executors',
+  keywords: ['Scripts', 'Next.js', 'Roblox'],
   authors: [{ name: 'Yuna-ux' }],
   robots: {
     index: true,
@@ -11,19 +11,16 @@ export const metadata = {
     nocache: true,
   },
   openGraph: {
-    title: 'IP Info',
+    title: 'Yuna-ux Scripts',
     description: 'Returns the IP in a JSON table',
-    url: 'https://ip-info-json.vercel.app/',
-    siteName: 'ip-info-json',
+    url: 'https://yuna-ux.vercel.app/',
+    siteName: 'yuna-ux.vercel.app',
     locale: 'en-US',
     type: 'website',
   },
   alternates: {
-    canonical: 'https://ip-info-json.vercel.app/',
-    languages: {
-      'en-US': 'https://ip-info-json.vercel.app/en-US',
-    },
-  },
+    canonical: 'https://yuna-ux.vercel.app/',
+  }
 }
 
 export default function RootLayout({ children }) {
