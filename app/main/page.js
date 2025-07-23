@@ -69,7 +69,6 @@ export default function Home() {
   );
 }
 
-// Dados mockados - pode substituir por chamada API ou database
 const scriptsData = [
   {
     id: 1,
@@ -79,15 +78,15 @@ const scriptsData = [
   },
   {
     id: 2,
-    name: 'Pet Simulator X',
-    description: 'Auto hatch, auto farm',
-    slug: 'pet-simulator'
+    name: 'Steal a brainrot',
+    description: 'Speed boost, auto collect and more',
+    slug: 'steal-a-brainrot'
   },
   {
     id: 3,
-    name: 'Murder Mystery 2',
-    description: 'ESP, auto-win features',
-    slug: 'mm2'
+    name: 'Slap battles',
+    description: 'Slap aura script bypass anticheat',
+    slug: 'sb'
   }
 ];
 
