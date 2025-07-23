@@ -12,10 +12,10 @@ export const metadata = {
     nocache: true,
   },
   openGraph: {
-    title: 'Yuna-UX Roblox Scripts',
-    description: 'Premium Roblox scripts and executors collection',
+    title: 'Yuna-ux Roblox Scripts',
+    description: 'Roblox scripts and custom executors',
     url: 'https://yuna-ux.vercel.app/',
-    siteName: 'Yuna-UX Scripts',
+    siteName: 'Yuna-ux Scripts',
     images: [
       {
         url: 'https://yuna-ux.vercel.app/og-image.jpg',
