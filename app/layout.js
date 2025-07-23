@@ -1,4 +1,4 @@
-// app/Layout.js
+// app/layout.js
 import './globals.css';
 import '../styles/home-style.css';
 
