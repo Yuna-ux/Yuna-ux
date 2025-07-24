@@ -42,25 +42,9 @@ export default function RootLayout({ children }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        
-        //<link rel="icon" href="/favicon.ico" sizes="any" />
-        //<link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        //<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        
-        //<link rel="manifest" href="/manifest.webmanifest" />
-        //<meta name="theme-color" content="#6d28d9" />
-        <link
-          rel="preload"
-          href="fonts/LilitaOne-Regular.ttf"
-          as="font"
-          type="font/ttf"
-          crossOrigin="anonymous"
-        />
       </head>
-      <body className="bg-gray-900 text-white antialiased">
-        <div className="min-h-screen flex flex-col">
+      <body>
           {children}
-        </div>
       </body>
     </html>
   );
