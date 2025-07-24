@@ -87,21 +87,21 @@ const scriptsData = [
     id: 1,
     name: 'Blox Fruits',
     description: 'Auto farm, teleports and more',
-    image: 'blox-fruits.webp',
+    image: 'blox-fruits.jpg',
     file: 'blox-fruits.lua'
   },
   {
     id: 2,
     name: 'Steal a brainrot',
     description: 'Speed boost, auto collect and more',
-    image: 'steal-a-brainrot.webp',
+    image: 'steal-a-brainrot.jpg',
     file: 'steal-a-brainrot.lua'
   },
   {
     id: 3,
     name: 'Slap battles',
     description: 'Slap aura script bypass anticheat',
-    image: 'slap-battles.webp',
+    image: 'slap-battles.jpg',
     file: 'slap-battles.lua'
   }
 ];
