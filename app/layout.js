@@ -30,6 +30,9 @@ export const metadata = {
   alternates: {
     canonical: 'https://yuna-ux.vercel.app/',
   },
+}
+
+export const viewport = {
   themeColor: '#6d28d9',
 }
 
