@@ -94,7 +94,7 @@ const scriptsData = [
     description: 'Auto farm, teleports and more',
     slug: 'blox-fruits',
     image: 'blox-fruits.png',
-    downloadLink: '/downloads/scripts/blox-fruits.lua'
+    downloadLink: '../downloads/scripts/blox-fruits.lua'
   },
   {
     id: 2,
@@ -102,7 +102,7 @@ const scriptsData = [
     description: 'Speed boost, auto collect and more',
     slug: 'steal-a-brainrot',
     image: 'steal-a-brainrot.png',
-    downloadLink: '/downloads/scripts/steal-a-brainrot.lua'
+    downloadLink: '../downloads/scripts/steal-a-brainrot.lua'
   },
   {
     id: 3,
@@ -110,7 +110,7 @@ const scriptsData = [
     description: 'Slap aura script bypass anticheat',
     slug: 'sb',
     image: 'slap-battles.png',
-    downloadLink: '/downloads/scripts/slap-battles.lua'
+    downloadLink: '../downloads/scripts/slap-battles.lua'
   }
 ];
 
@@ -120,7 +120,7 @@ const executorsData = [
     name: 'Synapse X',
     description: 'Premium Windows executor',
     image: 'synapse.png',
-    downloadLink: '/downloads/executors/SynapseX-v3.7.1.exe',
+    downloadLink: '../downloads/executors/SynapseX-v3.7.1.exe',
     filename: 'SynapseX-v3.7.1.exe',
     version: 'v3.7.1'
   },
@@ -129,16 +129,16 @@ const executorsData = [
     name: 'Script-Ware',
     description: 'Multi-platform executor',
     image: 'scriptware.png',
-    downloadLink: '/downloads/executors/ScriptWare-Mac.dmg',
+    downloadLink: '../downloads/executors/ScriptWare-Mac.dmg',
     filename: 'ScriptWare-Mac.dmg',
     version: 'for Mac'
   },
   {
     id: 3,
-    name: 'KRNL',
+    name: 'Krnl',
     description: 'Free Windows executor',
     image: 'krnl.png',
-    downloadLink: '/downloads/executors/KRNL-Bootstrapper.exe',
+    downloadLink: '../downloads/executors/KRNL-Bootstrapper.exe',
     filename: 'KRNL-Bootstrapper.exe'
   }
 ];
