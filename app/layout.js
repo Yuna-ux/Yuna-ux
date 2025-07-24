@@ -2,9 +2,9 @@
 import '../styles/home-style.css';
 
 export const metadata = {
-  title: 'Yuna-ux Roblox Scripts',
-  description: 'Premium Roblox scripts and executors collection',
-  keywords: ['Roblox', 'Scripts', 'Executors', 'Game Hacks', 'Lua Scripts'],
+  title: 'Yuna-ux site',
+  description: 'html site',
+  keywords: ['Html'],
   authors: [{ name: 'Yuna-ux', url: 'https://yuna-ux.vercel.app' }],
   robots: {
     index: true,
@@ -12,16 +12,16 @@ export const metadata = {
     nocache: true,
   },
   openGraph: {
-    title: 'Yuna-ux Roblox Scripts',
-    description: 'Roblox scripts and custom executors',
+    title: 'Yuna-ux site',
+    description: 'html site',
     url: 'https://yuna-ux.vercel.app/',
-    siteName: 'Yuna-ux Scripts',
+    siteName: 'Yuna-ux site',
     images: [
       {
         url: 'https://yuna-ux.vercel.app/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Yuna-UX Scripts',
+        alt: 'Yuna-ux site',
       },
     ],
     locale: 'en-US',
@@ -43,17 +43,15 @@ export default function RootLayout({ children }) {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         
-        {/* Favicon */}
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        //<link rel="icon" href="/favicon.ico" sizes="any" />
+        //<link rel="icon" href="/icon.svg" type="image/svg+xml" />
         //<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         
-        {/* PWA */}
-        <link rel="manifest" href="/manifest.webmanifest" />
-        <meta name="theme-color" content="#6d28d9" />
+        //<link rel="manifest" href="/manifest.webmanifest" />
+        //<meta name="theme-color" content="#6d28d9" />
         <link
           rel="preload"
-          href="/fonts/LilitaOne-Regular.ttf"
+          href="fonts/LilitaOne-Regular.ttf"
           as="font"
           type="font/ttf"
           crossOrigin="anonymous"
