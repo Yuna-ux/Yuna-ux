@@ -35,7 +35,7 @@ export default function Home() {
           {scriptsData.map((script) => (
             <div key={script.id} className="script-card">
               <img
-                src={`/images/scripts/${script.image}`}
+                src={`../../public/images/scripts/${script.image}`}
                 alt={script.name}
                 className="script-image"
               />
