@@ -2,10 +2,10 @@
 import '../styles/home-style.css';
 
 export const metadata = {
-  title: 'Yuna-UX Roblox Scripts',
+  title: 'Yuna-ux Roblox Scripts',
   description: 'Premium Roblox scripts and executors collection',
   keywords: ['Roblox', 'Scripts', 'Executors', 'Game Hacks', 'Lua Scripts'],
-  authors: [{ name: 'Yuna-UX', url: 'https://yuna-ux.vercel.app' }],
+  authors: [{ name: 'Yuna-ux', url: 'https://yuna-ux.vercel.app' }],
   robots: {
     index: true,
     follow: true,
