@@ -18,7 +18,18 @@ export default function Home() {
 
   return (
     <main className="container">
-      {/* Seção de Scripts Atualizada */}
+      <header className="header">
+        <div className="logo-container">
+          <img src="/images/logo.svg" alt="Yuna-ux Logo" className="logo" />
+          <div>
+            <h1 className="title">Yuna-ux Roblox Scripts</h1>
+            <p className="subtitle">Your premium source for Roblox scripts and executors</p>
+          </div>
+        </div>
+        <div className="ip-section">
+          <IPDisplay />
+        </div>
+      </header>
       <section className="featured-scripts">
         <h2>Featured Scripts</h2>
         <div className="script-grid">
