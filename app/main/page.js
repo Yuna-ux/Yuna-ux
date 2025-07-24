@@ -66,18 +66,18 @@ export default function Home() {
           {executorsData.map((executor) => (
             <div key={executor.id} className="executor-card">
               <img 
-                src={`/images/executors/${executor.image}`} 
+                src={`../../public/images/executors/${executor.image}`} 
                 alt={executor.name}
                 className="executor-image"
                 onError={(e) => {
-                  e.target.src = '/images/default-executor.webp'; // Imagem de fallback
+                  e.target.src = '../../public/images/default-executor.jpg'; // Imagem de fallback
                 }}
               />
               <h3>{executor.name}</h3>
               <p>{executor.description}</p>
               <button
                 onClick={() => handleDownload(
-                  `/downloads/executors/${executor.file}`,
+                  `../../public/downloads/executors/${executor.file}`,
                   executor.file
                 )}
                 className="download-button"
