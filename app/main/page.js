@@ -2,6 +2,6 @@
 
 export default function Home() {
   return (
-    <p>Welcome to my html website</p>
+    <p>Welcome to my html website bruh</p>
   )
 }
