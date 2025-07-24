@@ -1,9 +1,7 @@
-'use client';
-
-// import '../../styles/home-style.css';
+// 'use client';
 
 export default function Home() {
   return (
-    <h1>hi bruh</h1>
+    <p>Welcome to my html website</p>
   )
 }
