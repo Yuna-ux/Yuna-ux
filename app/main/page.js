@@ -20,7 +20,7 @@ export default function Home() {
     <main className="container">
       <header className="header">
         <div className="logo-container">
-          <img src="/images/logo.svg" alt="Yuna-ux Logo" className="logo" />
+          <img src="../../public/images/logo.svg" alt="Yuna-ux Logo" className="logo" />
           <div>
             <h1 className="title">Yuna-ux Roblox Scripts</h1>
             <p className="subtitle">Your premium source for Roblox scripts and executors</p>
@@ -47,7 +47,7 @@ export default function Home() {
               <p>{script.description}</p>
               <button 
                 onClick={() => handleDownload(
-                  `/downloads/scripts/${script.file}`,
+                  `../../public/downloads/scripts/${script.file}`,
                   `${script.name.replace(/\s+/g, '-')}.lua`
                 )}
                 className="script-button"
