@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import './IPPage.css'; // Crie este arquivo com o CSS acima
 
 export default function IPPage() {
   const [ip, setIp] = useState(null);
