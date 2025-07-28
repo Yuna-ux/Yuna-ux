@@ -1,1 +1,8 @@
-
+.h1 {
+  font-family: 'Arial', sans-serif;
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
