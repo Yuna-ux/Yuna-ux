@@ -1,7 +1,7 @@
-// app/page.js
-// vai redirecionar para /main
-import { redirect } from 'next/navigation'
+// 'use client';
 
-export default function Page() {
-  redirect('/main');
+export default function Home() {
+    return (
+        <h1>Welcome to my html website</h1>
+    )
 }
