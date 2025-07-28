@@ -2,8 +2,9 @@
 
 export default function Home() {
   return (
-    <div>
-      <h1>Welcome to my html website</h1>
+    <div class="Main">
+      <h1>Meu Site Simples</h1>
+      <p id="ip-display">Carregando IP...</p>
       <script src="client/ip-fetch.js" />
     </div>
   );
