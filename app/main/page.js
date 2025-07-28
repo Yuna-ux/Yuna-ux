@@ -1,6 +1,7 @@
 // 'use client';
 
 export default function Home() {
-    <p>Welcome to my html website</p>
-  )
+    return (
+        <h1>Welcome to my html website</h1>
+    )
 }
