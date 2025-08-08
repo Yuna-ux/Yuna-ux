@@ -17,7 +17,7 @@ export default function IPPage() {
 
   return (
     <div className="ip-container">
-      <h1>Seu Endereço IP</h1>
+      <h1>Seu IP</h1>
       
       {isLoading ? (
         <div className="loading">
