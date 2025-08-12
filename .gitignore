@@ -1,0 +1,40 @@
+# Dependências
+/node_modules
+/.next
+/.vercel
+
+# Variáveis de ambiente
+.env*
+!.env.example  # Mantém apenas o exemplo
+
+# Configurações locais
+*.local
+
+# Logs e diagnósticos
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor/IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Supabase local (se for usar em desenvolvimento)
+supabase/.temp
+supabase/.wrangler
+supabase/functions/__pycache__
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Testes e cobertura
+/coverage
+/.nyc_output
+
+# Builds e outputs
+/build
+/dist
