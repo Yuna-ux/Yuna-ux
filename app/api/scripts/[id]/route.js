@@ -64,12 +64,10 @@ const errorHTML = (id) => `
 <body>
   <div class="container">
     <div class="emoji">🔍</div>
-    <h1>Script Not Found</h1> <!-- Título em inglês -->
-    <p>The requested resource doesn't exist or was deleted.</p> <!-- Mensagem em inglês -->
-    <p>Reference ID: <span class="code">${id}</span></p> <!-- ID visível -->
-    
-    <a href="/" class="btn">Back to Home</a> <!-- Botão em inglês -->
-    
+    <h1>Script Not Found</h1>
+    <p>The requested resource doesn't exist or was deleted.</p>
+    <p>Reference ID: <span class="code">${id}</span></p>
+    <a href="/" class="btn">Back to Home</a>
     <p style="margin-top: 3rem; font-size: 0.875rem; color: #94a3b8;">
       Roblox Script Storage • ${new Date().getFullYear()}
     </p>
@@ -80,36 +78,56 @@ const errorHTML = (id) => `
 
 export async function GET(req, { params }) {
   const userAgent = req.headers.get('user-agent') || '';
-  
-  // Retorna erro 404 para qualquer acesso não-Roblox
-  if (!userAgent.includes('Roblox')) {
-    return new Response(errorHTML(params.id), {
-      status: 404,
-      headers: { 'Content-Type': 'text/html' }
-    });
-  }
+  const scriptId = params.id;
 
+  // Verifica se é uma requisição do Roblox
+  const isRobloxRequest =
+    userAgent.includes('Roblox/WinHttp') ||
+    userAgent.toLowerCase().includes('roblox');
+  
   try {
-    const { data, error } = await supabase
+    // 1. Busca o script no banco de dados
+    const { data: script, error } = await supabase
       .from('scripts')
-      .select('lua_code')
-      .eq('id', params.id)
+      .select('lua_code, access_count')
+      .eq('id', scriptId)
       .single();
 
-    if (error || !data) {
-      return new Response(errorHTML(params.id), {
+    // 2. Se não encontrar ou erro, retorna página 404
+    if (error || !script) {
+      return new Response(errorHTML(scriptId), {
         status: 404,
         headers: { 'Content-Type': 'text/html' }
       });
     }
 
-    return new Response(data.lua_code, {
-      headers: { 'Content-Type': 'text/plain' }
-    });
+    // 3. Atualiza o contador de acessos (apenas se for do Roblox)
+    if (isRobloxRequest) {
+      await supabase
+        .from('scripts')
+        .update({ 
+          access_count: (script.access_count || 0) + 1,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', scriptId);
+    }
+
+    // 4. Retorna o conteúdo apropriado
+    if (isRobloxRequest) {
+      return new Response(script.lua_code, {
+        headers: { 'Content-Type': 'text/plain' }
+      });
+    } else {
+      return new Response(errorHTML(scriptId), {
+        status: 404,
+        headers: { 'Content-Type': 'text/html' }
+      });
+    }
 
   } catch (error) {
-    return new Response(errorHTML(params.id), {
-      status: 404,
+    console.error('Error fetching script:', error);
+    return new Response(errorHTML(scriptId), {
+      status: 500,
       headers: { 'Content-Type': 'text/html' }
     });
   }
