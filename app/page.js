@@ -20,7 +20,6 @@ export default function Home() {
     }
 
     try {
-      // Verifica se o código já existe
       const { data: existing } = await supabase
         .from('scripts')
         .select('id')
