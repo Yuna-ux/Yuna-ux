@@ -1,6 +1,6 @@
 "use client";
-import supabase from '@/libs/supabase';
 import { useState } from 'react';
+import supabase from '@/libs/supabase';
 
 export default function Home() {
   const [code, setCode] = useState('');
@@ -37,10 +37,4 @@ export default function Home() {
       </form>
     </main>
   );
-}      </form>
-    </main>
-  );
-} </form>
-    </main>
-  );
-}}
+}
