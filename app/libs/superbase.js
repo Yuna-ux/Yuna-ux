@@ -1,8 +1,8 @@
-// app/api/supabase/route.js
+// app/libs/superbase.js
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
-  process.env.SUPABASE_URL,  // Chave NÃO pública (só no servidor)
+  process.env.SUPABASE_URL,
   process.env.SUPABASE_KEY
 );
 
