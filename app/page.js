@@ -11,19 +11,29 @@ export default function Home() {
     setTimeout(() => setNotification(null), 3000);
   };
 
+  const normalizeCode = (code) => {
+    return code
+      .trim()
+      .replace(/\s+/g, ' ') // Remove espaços extras
+      .replace(/\r\n/g, '\n'); // Normaliza quebras de linha
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!code.trim()) {
+    const normalizedCode = normalizeCode(code);
+    
+    if (!normalizedCode) {
       showNotification('Digite um código Lua válido', true);
       return;
     }
 
     try {
+      // Verifica se o código já existe (com comparação normalizada)
       const { data: existing } = await supabase
         .from('scripts')
         .select('id')
-        .eq('lua_code', code)
+        .eq('lua_code', normalizedCode)
         .single();
 
       let scriptId = existing?.id || crypto.randomUUID();
@@ -31,7 +41,10 @@ export default function Home() {
       if (!existing) {
         const { error } = await supabase
           .from('scripts')
-          .insert({ id: scriptId, lua_code: code });
+          .insert({ 
+            id: scriptId, 
+            lua_code: normalizedCode // Salva a versão normalizada
+          });
 
         if (error) throw error;
       }
@@ -44,10 +57,11 @@ export default function Home() {
         'Novo código salvo! Link copiado.');
 
     } catch (error) {
+      console.error('Erro ao salvar:', error);
       showNotification(
         error.message.includes('500') 
           ? 'Limite de 500 scripts atingido!' 
-          : 'Erro ao salvar código',
+          : 'Erro ao salvar código. Tente novamente.',
         true
       );
     }
