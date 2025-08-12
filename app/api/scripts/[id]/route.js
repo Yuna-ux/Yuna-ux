@@ -3,7 +3,6 @@ import supabase from '@/libs/supabase';
 export async function GET(req, { params }) {
   const userAgent = req.headers.get('user-agent') || '';
   
-  // HTML de erro 404 genérico
   const errorHTML = `
   <!DOCTYPE html>
   <html lang="pt-BR">
