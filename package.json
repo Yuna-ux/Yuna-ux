@@ -1,7 +1,7 @@
 {
-  "name": "yuna-ux",
+  "name": "roblox-scripts",
   "version": "1.0.0",
-  "description": "Yuna-ux Project",
+  "description": "Roblox Lua Script Storage",
   "author": "Yuna-ux",
   "scripts": {
     "dev": "next dev",
@@ -12,6 +12,9 @@
   "dependencies": {
     "next": "15.3.4",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "@vercel/postgres": "latest",
+    "react-hot-toast": "^2.4.1",
+    "uuid": "^9.0.1"
   }
 }
