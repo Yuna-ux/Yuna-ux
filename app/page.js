@@ -15,89 +15,62 @@ export default function Home() {
     e.preventDefault();
     
     if (!code.trim()) {
-      showNotification('Please enter valid Lua code', true);
+      showNotification('Por favor, insira um código Lua válido', true);
       return;
     }
 
     try {
-      // Normaliza o código (remove espaços extras e normaliza quebras de linha)
       const normalizedCode = code.trim().replace(/\s+/g, ' ');
-      
-      // Verifica se o código já existe
-      const { data: existing, error: queryError } = await supabase
-        .from('scripts')
-        .select('id')
-        .eq('lua_code', normalizedCode)
-        .single();
 
-      if (queryError && queryError.code !== 'PGRST116') { // Ignora erro "No rows found"
-        throw queryError;
+      // Verificação explícita do limite antes de tentar inserir
+      const { count } = await supabase
+        .from('scripts')
+        .select('*', { count: 'exact', head: true });
+
+      if (count >= 500) {
+        throw new Error('LIMITE_ATINGIDO');
       }
 
-      let scriptId = existing?.id || crypto.randomUUID();
+      // Verifica se o código já existe
+      const { data: existing } = await supabase
+        .from('scripts')
+        .select('id')
+        .textSearch('lua_code', normalizedCode, {
+          type: 'phrase',
+          config: 'portuguese'
+        })
+        .single();
 
-      // Se não existir, insere no banco
+      const scriptId = existing?.id || crypto.randomUUID();
+
       if (!existing) {
-        const { error: insertError } = await supabase
+        const { error } = await supabase
           .from('scripts')
           .insert({ 
             id: scriptId, 
             lua_code: normalizedCode 
           });
 
-        if (insertError) throw insertError;
+        if (error) throw error;
       }
 
-      // Copia o link para a área de transferência
       const link = `${window.location.origin}/api/scripts/${scriptId}`;
       await navigator.clipboard.writeText(link);
       
       showNotification(existing ? 
-        'Link copied! (existing code)' : 
-        'New code saved! Link copied.');
+        'Link copiado (código existente)' : 
+        'Novo código salvo! Link copiado.');
 
     } catch (error) {
-      console.error('Save error:', error);
+      console.error('Erro detalhado:', error);
       showNotification(
-        error.code === '42501' || error.message.includes('500') 
-          ? 'Script limit reached (500 max)' 
-          : 'Error saving code. Try again.',
+        error.message === 'LIMITE_ATINGIDO' || error.code === '42501'
+          ? 'Limite de 500 scripts atingido! Delete alguns para continuar.'
+          : 'Erro ao processar seu código. Tente novamente.',
         true
       );
     }
   };
 
-  return (
-    <div className="container">
-      {notification && (
-        <div className={`notification ${notification.isError ? 'error' : ''}`}>
-          {notification.message}
-        </div>
-      )}
-
-      <div className="header">
-        <h1 className="title">Roblox Script Storage</h1>
-      </div>
-
-      <form onSubmit={handleSubmit}>
-        <div className="code-editor">
-          <textarea
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            placeholder="-- Cole seu código Lua aqui\n\nprint('Olá Roblox!')"
-            spellCheck="false"
-            required
-          />
-        </div>
-        
-        <button type="submit" className="btn">
-          Gerar e Copiar Link
-        </button>
-      </form>
-
-      <div className="footer">
-        <p>O mesmo código gera o mesmo link automaticamente</p>
-      </div>
-    </div>
-  );
+  // ... (seu JSX existente)
 }
