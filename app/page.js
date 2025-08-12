@@ -25,17 +25,6 @@ export default function RobloxScriptStorage() {
     const normalizedCode = code.trim().replace(/\s+/g, ' ');
     
     try {
-      // 1. Check script limit
-      const { count: scriptCount } = await supabase
-        .from('scripts')
-        .select('*', { count: 'exact', head: true });
-
-      if (scriptCount >= 500) {
-        showNotification('Script limit reached (500 max)', true);
-        return;
-      }
-
-      // 2. Check for existing code
       const { data: existingScript } = await supabase
         .from('scripts')
         .select('id, access_count')
@@ -45,7 +34,6 @@ export default function RobloxScriptStorage() {
       let scriptId;
       
       if (existingScript) {
-        // Update existing script
         scriptId = existingScript.id;
         const { error: updateError } = await supabase
           .from('scripts')
@@ -57,7 +45,15 @@ export default function RobloxScriptStorage() {
 
         if (updateError) throw updateError;
       } else {
-        // Create new script
+        const { count } = await supabase
+          .from('scripts')
+          .select('*', { count: 'exact', head: true });
+
+        if (count >= 500) {
+          showNotification('Script limit reached (500 max). Delete old scripts to add new ones.', true);
+          return;
+        }
+
         scriptId = crypto.randomUUID();
         const { error: insertError } = await supabase
           .from('scripts')
@@ -70,7 +66,6 @@ export default function RobloxScriptStorage() {
         if (insertError) throw insertError;
       }
 
-      // 3. Copy link to clipboard
       const scriptLink = `${window.location.origin}/script/${scriptId}`;
       await navigator.clipboard.writeText(scriptLink);
       
@@ -81,14 +76,11 @@ export default function RobloxScriptStorage() {
         false
       );
 
-      // 4. Clear editor if new script
-      if (!existingScript) {
-        setCode('');
-      }
+      if (!existingScript) setCode('');
       
     } catch (error) {
-      console.error('Script processing error:', error);
-      showNotification(`❌ Error: ${error.message || 'Failed to process script'}`, true);
+      console.error('Error:', error);
+      showNotification(`❌ ${error.message || 'Operation failed'}`, true);
     } finally {
       setIsLoading(false);
     }
@@ -96,7 +88,6 @@ export default function RobloxScriptStorage() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4">
-      {/* Notification Toast */}
       {notification && (
         <div className={`fixed top-4 right-4 px-6 py-3 rounded-md shadow-lg z-50 ${
           notification.isError ? 'bg-red-600' : 'bg-green-600'
@@ -106,21 +97,18 @@ export default function RobloxScriptStorage() {
       )}
 
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <header className="text-center mb-8">
           <h1 className="text-4xl font-bold text-amber-400 mb-2">Roblox Script Storage</h1>
-          <p className="text-gray-400">Store and share your Roblox Lua scripts securely</p>
+          <p className="text-gray-400">Store and share your Roblox Lua scripts</p>
         </header>
 
-        {/* Editor Form */}
         <form onSubmit={handleSubmit} className="mb-8">
-          <div className="bg-gray-800 rounded-lg overflow-hidden mb-4">
+          <div className="bg-gray-800 rounded-lg overflow-hidden mb-4 border border-gray-700">
             <textarea
               value={code}
               onChange={(e) => setCode(e.target.value)}
               placeholder={`-- Paste your Roblox Lua code here\n\n-- Example:\nlocal part = Instance.new("Part")\npart.Position = Vector3.new(0, 10, 0)\npart.Parent = workspace`}
-              spellCheck="false"
-              className="w-full h-96 p-4 bg-gray-800 text-gray-100 font-mono text-sm focus:outline-none resize-none"
+              className="w-full h-96 p-4 bg-gray-800 text-gray-100 font-mono text-sm focus:outline-none resize-none placeholder-gray-500"
               disabled={isLoading}
             />
           </div>
@@ -129,36 +117,32 @@ export default function RobloxScriptStorage() {
             type="submit"
             disabled={isLoading}
             className={`w-full py-3 px-6 rounded-lg font-semibold ${
-              isLoading 
-                ? 'bg-gray-600 cursor-not-allowed' 
-                : 'bg-amber-500 hover:bg-amber-600 transition-colors'
-            }`}
+              isLoading ? 'bg-gray-600' : 'bg-amber-500 hover:bg-amber-600'
+            } transition-colors`}
           >
             {isLoading ? 'Processing...' : 'Generate & Copy Link'}
           </button>
         </form>
 
-        {/* Features & Info */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-400">
-          <div className="bg-gray-800 p-4 rounded-lg">
-            <h3 className="text-amber-400 mb-2">🔒 Secure Storage</h3>
-            <p>Your scripts are stored securely with UUID access links</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
+            <h3 className="text-amber-400 mb-2 font-medium">Secure Storage</h3>
+            <p className="text-gray-400 text-sm">Encrypted storage with unique access links</p>
           </div>
-          <div className="bg-gray-800 p-4 rounded-lg">
-            <h3 className="text-amber-400 mb-2">♻️ Code Deduplication</h3>
-            <p>Same code generates the same link automatically</p>
+          <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
+            <h3 className="text-amber-400 mb-2 font-medium">Smart Deduplication</h3>
+            <p className="text-gray-400 text-sm">Identical scripts get the same link</p>
           </div>
-          <div className="bg-gray-800 p-4 rounded-lg">
-            <h3 className="text-amber-400 mb-2">📋 Easy Sharing</h3>
-            <p>Links are copied to clipboard automatically</p>
+          <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
+            <h3 className="text-amber-400 mb-2 font-medium">Easy Sharing</h3>
+            <p className="text-gray-400 text-sm">One-click copy to clipboard</p>
           </div>
         </div>
 
-        {/* Footer */}
-        <footer className="mt-12 text-center text-gray-500 text-xs">
-          <p>Max 500 scripts stored | Auto-delete after 30 days of inactivity</p>
+        <footer className="text-center text-gray-500 text-sm border-t border-gray-800 pt-4">
+          <p>Max 500 scripts | Auto-prune inactive scripts</p>
         </footer>
       </div>
     </div>
   );
-        }
+}
