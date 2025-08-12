@@ -37,4 +37,7 @@ export default function Home() {
       </form>
     </main>
   );
+} // ← Apenas UMA chave de fechamento aqui      </form>
+    </main>
+  );
 }}
