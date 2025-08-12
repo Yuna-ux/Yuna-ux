@@ -1,37 +1,40 @@
-'use client';
+"use client";
+import supabase from '@/libs/supabase';
+import { useState } from 'react';
 
-import { useEffect, useState } from 'react';
+export default function Home() {
+  const [code, setCode] = useState('');
 
-export default function IPPage() {
-  const [ip, setIp] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const scriptId = crypto.randomUUID(); // Gera ID aleatório
 
-  useEffect(() => {
-    fetch('/api/ip')
-      .then(res => res.json())
-      .then(data => {
-        setIp(data.ip);
-        setIsLoading(false);
-      });
-  }, []);
+    const { error } = await supabase
+      .from('scripts')
+      .insert({ id: scriptId, lua_code: code });
+
+    if (error) {
+      alert(error.message.includes('500') 
+        ? 'Limite de 500 scripts atingido!' 
+        : 'Erro ao salvar!');
+    } else {
+      alert(`Script criado! Link: /api/scripts/${scriptId}`);
+      setCode('');
+    }
+  };
 
   return (
-    <div className="ip-container">
-      <h1>Seu IP</h1>
-      
-      {isLoading ? (
-        <div className="loading">
-          <div className="dot"></div>
-          <div className="dot"></div>
-          <div className="dot"></div>
-        </div>
-      ) : (
-        <div className="ip-display">
-          {ip}
-        </div>
-      )}
-      
-      <p className="footer">Esta informação é usada apenas para fins de demonstração</p>
-    </div>
+    <main>
+      <form onSubmit={handleSubmit}>
+        <textarea
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          placeholder="Cole seu código Lua aqui..."
+          rows={15}
+          required
+        />
+        <button type="submit">Gerar Link</button>
+      </form>
+    </main>
   );
-}
+}}
