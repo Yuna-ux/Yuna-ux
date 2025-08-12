@@ -15,62 +15,94 @@ export default function Home() {
     e.preventDefault();
     
     if (!code.trim()) {
-      showNotification('Por favor, insira um código Lua válido', true);
+      showNotification('Please enter valid Lua code', true);
       return;
     }
 
-    try {
-      const normalizedCode = code.trim().replace(/\s+/g, ' ');
+    const normalizedCode = code.trim().replace(/\s+/g, ' ');
+    
+    // Verifica o limite de scripts
+    const { count, error: countError } = await supabase
+      .from('scripts')
+      .select('*', { count: 'exact', head: true });
 
-      // Verificação explícita do limite antes de tentar inserir
-      const { count } = await supabase
-        .from('scripts')
-        .select('*', { count: 'exact', head: true });
-
-      if (count >= 500) {
-        throw new Error('LIMITE_ATINGIDO');
-      }
-
-      // Verifica se o código já existe
-      const { data: existing } = await supabase
-        .from('scripts')
-        .select('id')
-        .textSearch('lua_code', normalizedCode, {
-          type: 'phrase',
-          config: 'portuguese'
-        })
-        .single();
-
-      const scriptId = existing?.id || crypto.randomUUID();
-
-      if (!existing) {
-        const { error } = await supabase
-          .from('scripts')
-          .insert({ 
-            id: scriptId, 
-            lua_code: normalizedCode 
-          });
-
-        if (error) throw error;
-      }
-
-      const link = `${window.location.origin}/api/scripts/${scriptId}`;
-      await navigator.clipboard.writeText(link);
-      
-      showNotification(existing ? 
-        'Link copiado (código existente)' : 
-        'Novo código salvo! Link copiado.');
-
-    } catch (error) {
-      console.error('Erro detalhado:', error);
-      showNotification(
-        error.message === 'LIMITE_ATINGIDO' || error.code === '42501'
-          ? 'Limite de 500 scripts atingido! Delete alguns para continuar.'
-          : 'Erro ao processar seu código. Tente novamente.',
-        true
-      );
+    if (countError) {
+      showNotification('Error checking script limit', true);
+      return;
     }
+
+    if (count >= 500) {
+      showNotification('Script limit reached (500 max)', true);
+      return;
+    }
+
+    // Verifica se o código já existe
+    const { data: existing, error: queryError } = await supabase
+      .from('scripts')
+      .select('id')
+      .ilike('lua_code', normalizedCode)
+      .single();
+
+    if (queryError && queryError.code !== 'PGRST116') {
+      showNotification('Error checking existing code', true);
+      return;
+    }
+
+    const scriptId = existing?.id || crypto.randomUUID();
+
+    if (!existing) {
+      const { error: insertError } = await supabase
+        .from('scripts')
+        .insert({ id: scriptId, lua_code: normalizedCode });
+
+      if (insertError) {
+        showNotification('Error saving new script', true);
+        return;
+      }
+    }
+
+    // Copia o link
+    const link = `${window.location.origin}/api/scripts/${scriptId}`;
+    await navigator.clipboard.writeText(link);
+    
+    showNotification(
+      existing 
+        ? 'Link copied! (existing code)' 
+        : 'New code saved! Link copied.'
+    );
   };
 
-  // ... (seu JSX existente)
+  return (
+    <div className="container">
+      {notification && (
+        <div className={`notification ${notification.isError ? 'error' : ''}`}>
+          {notification.message}
+        </div>
+      )}
+
+      <div className="header">
+        <h1 className="title">Roblox Script Storage</h1>
+      </div>
+
+      <form onSubmit={handleSubmit}>
+        <div className="code-editor">
+          <textarea
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            placeholder="-- Paste your Lua code here\n\nprint('Hello Roblox!')"
+            spellCheck="false"
+            required
+          />
+        </div>
+        
+        <button type="submit" className="btn">
+          Generate & Copy Link
+        </button>
+      </form>
+
+      <div className="footer">
+        <p>Same code generates same link automatically</p>
+      </div>
+    </div>
+  );
 }
