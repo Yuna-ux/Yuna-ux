@@ -7,7 +7,7 @@ export default function Home() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const scriptId = crypto.randomUUID(); // Gera ID aleatório
+    const scriptId = crypto.randomUUID();
 
     const { error } = await supabase
       .from('scripts')
@@ -37,7 +37,10 @@ export default function Home() {
       </form>
     </main>
   );
-} // ← Apenas UMA chave de fechamento aqui      </form>
+}      </form>
+    </main>
+  );
+} </form>
     </main>
   );
 }}
