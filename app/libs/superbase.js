@@ -1,12 +1,9 @@
-// app/libs/superbase.js
+// lib/supabase.js
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
+  "https://iswuhikrhyudrbpdcols.supabase.co",
+  "sb_publishable_0AuLfovh-dGGHt-K5apnmw_Mic96wXo"
 );
 
-export async function GET() {
-  const { data } = await supabase.from('scripts').select('*');
-  return Response.json(data);
-}
+export default supabase;
