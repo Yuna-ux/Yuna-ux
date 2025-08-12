@@ -11,57 +11,57 @@ export default function Home() {
     setTimeout(() => setNotification(null), 3000);
   };
 
-  const normalizeCode = (code) => {
-    return code
-      .trim()
-      .replace(/\s+/g, ' ') // Remove espaços extras
-      .replace(/\r\n/g, '\n'); // Normaliza quebras de linha
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    const normalizedCode = normalizeCode(code);
-    
-    if (!normalizedCode) {
-      showNotification('Digite um código Lua válido', true);
+    if (!code.trim()) {
+      showNotification('Please enter valid Lua code', true);
       return;
     }
 
     try {
-      // Verifica se o código já existe (com comparação normalizada)
-      const { data: existing } = await supabase
+      // Normaliza o código (remove espaços extras e normaliza quebras de linha)
+      const normalizedCode = code.trim().replace(/\s+/g, ' ');
+      
+      // Verifica se o código já existe
+      const { data: existing, error: queryError } = await supabase
         .from('scripts')
         .select('id')
         .eq('lua_code', normalizedCode)
         .single();
 
+      if (queryError && queryError.code !== 'PGRST116') { // Ignora erro "No rows found"
+        throw queryError;
+      }
+
       let scriptId = existing?.id || crypto.randomUUID();
 
+      // Se não existir, insere no banco
       if (!existing) {
-        const { error } = await supabase
+        const { error: insertError } = await supabase
           .from('scripts')
           .insert({ 
             id: scriptId, 
-            lua_code: normalizedCode // Salva a versão normalizada
+            lua_code: normalizedCode 
           });
 
-        if (error) throw error;
+        if (insertError) throw insertError;
       }
 
+      // Copia o link para a área de transferência
       const link = `${window.location.origin}/api/scripts/${scriptId}`;
-      navigator.clipboard.writeText(link);
+      await navigator.clipboard.writeText(link);
       
       showNotification(existing ? 
-        'Link copiado (código existente)' : 
-        'Novo código salvo! Link copiado.');
+        'Link copied! (existing code)' : 
+        'New code saved! Link copied.');
 
     } catch (error) {
-      console.error('Erro ao salvar:', error);
+      console.error('Save error:', error);
       showNotification(
-        error.message.includes('500') 
-          ? 'Limite de 500 scripts atingido!' 
-          : 'Erro ao salvar código. Tente novamente.',
+        error.code === '42501' || error.message.includes('500') 
+          ? 'Script limit reached (500 max)' 
+          : 'Error saving code. Try again.',
         true
       );
     }
