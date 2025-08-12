@@ -1,7 +1,6 @@
 "use client";
 import { useState } from 'react';
 import supabase from '@/libs/supabase';
-import '../../styles/global.css'; // Importe o CSS aqui
 
 export default function Home() {
   const [code, setCode] = useState('');
