@@ -1,3 +1,5 @@
+'use client';
+
 import { submitScript } from './actions';
 import styles from '../styles/home-style.css';
 
