@@ -2,7 +2,7 @@
 import { useState } from 'react'
 
 export default function ThumbnailTester() {
-  const [universeId, setUniverseId] = useState('6886240833')
+  const [universeId, setUniverseId] = useState('3623096087')
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
 
@@ -89,7 +89,7 @@ export default function ThumbnailTester() {
 local HttpService = game:GetService("HttpService")
 
 local function getThumbnail(universeId)
-    local url = "https://your-domain.com/api/v1"
+    local url = "https://yuna-ux/api/v1"
     local headers = {
         ["Content-Type"] = "application/json"
     }
