@@ -1,5 +1,5 @@
 // app/layout.js
-import '../styles/home-style.css';
+// import '../styles/home-style.css';
 
 export const metadata = {
   title: 'Yuna-ux site',
