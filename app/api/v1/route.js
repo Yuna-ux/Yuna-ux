@@ -1,10 +1,37 @@
 import { NextResponse } from 'next/server'
 
+// Manipulador GET
+export async function GET() {
+  return NextResponse.json(
+    {
+      status: 'info',
+      message: 'Please use POST method to fetch thumbnails',
+      documentation: {
+        method: 'POST',
+        parameters: {
+          universeId: 'number (required)',
+          size: 'string (optional, default: 768x432)',
+          format: 'string (optional, default: Png)'
+        },
+        example: {
+          curl: 'curl -X POST -H "Content-Type: application/json" -d \'{"universeId":12345}\' https://your-domain.com/api/v1'
+        }
+      }
+    },
+    {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      }
+    }
+  )
+}
+
+// Manipulador POST
 export async function POST(request) {
   try {
     const { universeId, size = '768x432', format = 'Png' } = await request.json()
 
-    // Validação do universeId
     if (!universeId) {
       return NextResponse.json(
         {
@@ -16,12 +43,10 @@ export async function POST(request) {
       )
     }
 
-    // Requisição para a API do Roblox
     const robloxUrl = `https://thumbnails.roblox.com/v1/games/multiget/thumbnails?universeIds=${universeId}&size=${size}&format=${format}`
     const response = await fetch(robloxUrl)
     const data = await response.json()
 
-    // Verifica se a thumbnail existe
     if (data.data?.[0]?.thumbnails?.[0]?.imageUrl) {
       return NextResponse.json({
         status: 'success',
@@ -31,7 +56,7 @@ export async function POST(request) {
           metadata: {
             size,
             format,
-            expiresAt: new Date(Date.now() + 86400000).toISOString() // 24h
+            expiresAt: new Date(Date.now() + 86400000).toISOString()
           }
         }
       })
@@ -59,12 +84,12 @@ export async function POST(request) {
   }
 }
 
-// Configuração CORS para métodos OPTIONS
+// Manipulador OPTIONS para CORS
 export async function OPTIONS() {
   return NextResponse.json(null, {
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type'
     }
   })
