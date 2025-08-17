@@ -1,6 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req, res) {
   // Permitir apenas POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -17,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const response = await fetch(robloxUrl);
     const data = await response.json();
 
-    if (data.data?.[0]?.thumbnails?.[0]?.imageUrl) {
+    if (data.data && data.data[0] && data.data[0].thumbnails && data.data[0].thumbnails[0] && data.data[0].thumbnails[0].imageUrl) {
       return res.json({ 
         thumbnailUrl: data.data[0].thumbnails[0].imageUrl 
       });
