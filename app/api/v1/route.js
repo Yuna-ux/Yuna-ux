@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 
-// Manipulador GET
 export async function GET() {
   return NextResponse.json(
     {
@@ -27,7 +26,6 @@ export async function GET() {
   )
 }
 
-// Manipulador POST
 export async function POST(request) {
   try {
     const { universeId, size = '768x432', format = 'Png' } = await request.json()
