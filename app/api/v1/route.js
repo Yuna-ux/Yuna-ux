@@ -14,7 +14,7 @@ export async function GET() {
           format: 'string (optional, default: Png)'
         },
         example: {
-          curl: 'curl -X POST -H "Content-Type: application/json" -d \'{"universeId":12345}\' https://your-domain.com/api/v1'
+          curl: 'curl -X POST -H "Content-Type: application/json" -d \'{"universeId":12345}\' https://yuna-ux.vercel.app/api/v1'
         }
       }
     },
