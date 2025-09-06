@@ -82,7 +82,6 @@ export async function POST(request) {
   }
 }
 
-// Manipulador OPTIONS para CORS
 export async function OPTIONS() {
   return NextResponse.json(null, {
     headers: {
