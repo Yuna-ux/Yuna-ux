@@ -89,7 +89,7 @@ export default function ThumbnailTester() {
 local HttpService = game:GetService("HttpService")
 
 local function getThumbnail(universeId)
-    local url = "https://yuna-ux/api/v1"
+    local url = "https://yuna-ux.vercel.app/api/v1"
     local headers = {
         ["Content-Type"] = "application/json"
     }
@@ -109,7 +109,6 @@ local function getThumbnail(universeId)
     end
 end
 
--- Usage:
 local thumbnailData = getThumbnail(game.GameId)
         `}</pre>
       </div>
