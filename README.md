@@ -15,7 +15,6 @@ I am proficient in the following programming languages and technologies:
 --------------------------------------
 - **Monaco**: Utilizing Monaco Editor for code editing in web applications.
 --------------------------------------
-Additionally, I create **Roblox Executors** and work with custom scripting for Roblox games.
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Csharp_Logo.png" width="100" height="100"/>
 <img src="https://lua.org/images/luaa.gif" width="70" height="70"/>
