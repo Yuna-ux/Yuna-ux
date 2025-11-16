@@ -1,35 +1,35 @@
 name: Build PS2 Homebrew
 
-on: 
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+on: [push, workflow_dispatch]
 
 jobs:
   build-ps2:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout código
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
       
-    - name: Compilar para PS2
+    - name: Build PS2 ELF
       run: |
-        echo "🔨 Compilando Hello World para PS2..."
-        docker run --rm -v $(pwd):/src ps2dev/ps2dev \
-          /usr/local/ps2dev/ee/bin/ee-gcc -O2 -G0 -Wall \
-          -o /src/hello_world.elf /src/main.c \
-          -lc -lkernel -lsifrpc -ldebug
+        echo "🔨 Compilando para PS2..."
         
-    - name: Verificar ELF
+        # Método MAIS SIMPLES - usa o container como ambiente
+        docker run --rm -v $(pwd):/workspace -w /workspace \
+          ps2dev/ps2dev \
+          bash -c "ee-gcc -O2 -G0 -Wall -o hello_world.elf main.c -lc -lkernel -lsifrpc -ldebug"
+        
+    - name: Verificar resultado
       run: |
-        echo "📁 Arquivos gerados:"
-        ls -la *.elf
-        echo "🔍 Informações do ELF:"
-        file hello_world.elf
+        if [ -f "hello_world.elf" ]; then
+          echo "✅ SUCESSO: hello_world.elf gerado!"
+          file hello_world.elf
+        else
+          echo "❌ FALHA: ELF não foi gerado"
+          exit 1
+        fi
         
-    - name: Upload do ELF
+    - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ps2-homebrew
+        name: ps2-elf
         path: hello_world.elf
