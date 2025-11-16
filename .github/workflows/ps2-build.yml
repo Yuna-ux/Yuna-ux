@@ -13,14 +13,14 @@ jobs:
       run: |
         echo "🔨 Compilando para PS2..."
         
-        # Usa Ubuntu normal e instala ps2dev manualmente
+        # Baixa toolchain pré-compilado
         docker run --rm -v $(pwd):/workspace -w /workspace ubuntu:22.04 \
           bash -c "
-            apt-get update && apt-get install -y git build-essential wget &&
-            git clone https://github.com/ps2dev/ps2dev.git /tmp/ps2dev &&
-            cd /tmp/ps2dev &&
-            ./build-all.sh &&
-            /usr/local/ps2dev/ee/bin/ee-gcc -O2 -G0 -Wall -o /workspace/hello_world.elf /workspace/main.c -lc -lkernel -lsifrpc -ldebug
+            apt-get update && apt-get install -y wget xz-utils &&
+            wget https://github.com/ps2dev/ps2toolchain/releases/latest/download/ps2dev.tar.xz -O /tmp/ps2dev.tar.xz &&
+            tar -xf /tmp/ps2dev.tar.xz -C /usr/local/ &&
+            export PATH=/usr/local/ps2dev/ee/bin:/usr/local/ps2dev/iop/bin:/usr/local/ps2dev/dvp/bin:$PATH &&
+            ee-gcc -O2 -G0 -Wall -o hello_world.elf main.c -lc -lkernel -lsifrpc -ldebug
           "
         
     - name: Verificar resultado
