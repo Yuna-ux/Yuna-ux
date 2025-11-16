@@ -13,10 +13,10 @@ jobs:
       run: |
         echo "🔨 Compilando para PS2..."
         
-        # Método MAIS SIMPLES - usa o container como ambiente
+        # Usa /bin/sh que SEMPRE existe
         docker run --rm -v $(pwd):/workspace -w /workspace \
           ps2dev/ps2dev \
-          bash -c "ee-gcc -O2 -G0 -Wall -o hello_world.elf main.c -lc -lkernel -lsifrpc -ldebug"
+          /bin/sh -c "ee-gcc -O2 -G0 -Wall -o hello_world.elf main.c -lc -lkernel -lsifrpc -ldebug"
         
     - name: Verificar resultado
       run: |
