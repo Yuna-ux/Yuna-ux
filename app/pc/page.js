@@ -4,10 +4,11 @@ import { useRef, useState } from "react";
 
 export default function PCPage() {
   const [streaming, setStreaming] = useState(false);
+  const [offerText, setOfferText] = useState("");
+  const [answerInput, setAnswerInput] = useState("");
+
   const pcRef = useRef(null);
-  const localStreamRef = useRef(null);
   const videoRef = useRef(null);
-  const dcRef = useRef(null);
 
   const startTransmission = async () => {
     if (streaming) return;
@@ -16,8 +17,6 @@ export default function PCPage() {
       video: true,
       audio: false,
     });
-
-    localStreamRef.current = stream;
 
     if (videoRef.current) {
       videoRef.current.srcObject = stream;
@@ -30,39 +29,28 @@ export default function PCPage() {
       pc.addTrack(track, stream);
     });
 
-    const dc = pc.createDataChannel("signal");
-    dcRef.current = dc;
-
-    dc.onmessage = async (event) => {
-      const data = JSON.parse(event.data);
-
-      if (data.sdp) {
-        await pc.setRemoteDescription(data.sdp);
-      }
-
-      if (data.candidate) {
-        await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
-      }
-    };
-
     pc.onicecandidate = (e) => {
       if (e.candidate) {
-        console.log(
-          "ICE:",
-          JSON.stringify({ candidate: e.candidate })
-        );
+        console.log(JSON.stringify({ candidate: e.candidate }));
       }
     };
 
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
 
-    alert(
-      "Copy this offer and paste it on the mobile page:\n\n" +
-      JSON.stringify({ sdp: pc.localDescription })
-    );
-
+    setOfferText(JSON.stringify({ sdp: pc.localDescription }));
     setStreaming(true);
+  };
+
+  const copyOffer = async () => {
+    await navigator.clipboard.writeText(offerText);
+    alert("Offer copied");
+  };
+
+  const applyAnswer = async () => {
+    const data = JSON.parse(answerInput);
+    await pcRef.current.setRemoteDescription(data.sdp);
+    alert("Connected");
   };
 
   return (
@@ -73,6 +61,32 @@ export default function PCPage() {
         {streaming ? "Streaming started" : "Start streaming"}
       </button>
 
+      {offerText && (
+        <div style={{ marginTop: 20 }}>
+          <p>Offer (copy to mobile)</p>
+          <textarea
+            value={offerText}
+            readOnly
+            rows={6}
+            style={{ width: "100%" }}
+          />
+          <button onClick={copyOffer}>Copy Offer</button>
+        </div>
+      )}
+
+      {streaming && (
+        <div style={{ marginTop: 20 }}>
+          <p>Paste Answer from mobile</p>
+          <textarea
+            value={answerInput}
+            onChange={(e) => setAnswerInput(e.target.value)}
+            rows={6}
+            style={{ width: "100%" }}
+          />
+          <button onClick={applyAnswer}>Apply Answer</button>
+        </div>
+      )}
+
       <video
         ref={videoRef}
         autoPlay
@@ -82,4 +96,4 @@ export default function PCPage() {
       />
     </div>
   );
-}
+              }
