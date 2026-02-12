@@ -1,7 +1,7 @@
 // It uses a client, not a server.
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 export default function MobilePage() {
   useEffect(() => {
