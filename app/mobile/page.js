@@ -1,40 +1,62 @@
+// mobile
 import { useRef, useState } from "react";
 
-export default function PCPage() {
-  const [streaming, setStreaming] = useState(false);
-  const pcRef = useRef(null);
-  const localStreamRef = useRef(null);
-  const dcRef = useRef(null);
+export default function MobilePage() {
+  const pcRef = useRef(new RTCPeerConnection());
+  const [connected, setConnected] = useState(false);
+  const videoRef = useRef(null);
 
-  const startTransmission = async () => {
-    if (streaming) return;
+  const connectToPC = async () => {
+    const sdpString = prompt("Paste the offer from the PC:");
+    if (!sdpString) return;
 
-    localStreamRef.current = await navigator.mediaDevices.getDisplayMedia({
-      video: true,
-      audio: false,
-    });
+    const data = JSON.parse(sdpString);
+    await pcRef.current.setRemoteDescription(data.sdp);
 
-    const pc = new RTCPeerConnection();
-    pcRef.current = pc;
+    pcRef.current.ondatachannel = (event) => {
+      const dc = event.channel;
+      dc.onmessage = async (msg) => {
+        const data = JSON.parse(msg.data);
+        if (data.candidate) {
+          await pcRef.current.addIceCandidate(
+            new RTCIceCandidate(data.candidate)
+          );
+        }
+      };
+    };
 
-    localStreamRef.current.getTracks().forEach(track =>
-      pc.addTrack(track, localStreamRef.current)
-    );
-
-    const dc = pc.createDataChannel("signal");
-    dcRef.current = dc;
-
-    dc.onmessage = async (event) => {
-      const data = JSON.parse(event.data);
-      if (data.sdp) {
-        await pc.setRemoteDescription(data.sdp);
-      } else if (data.candidate) {
-        await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+    pcRef.current.ontrack = (event) => {
+      if (videoRef.current) {
+        videoRef.current.srcObject = event.streams[0];
       }
     };
 
-    pc.onicecandidate = (e) => {
-      if (e.candidate) console.log(JSON.stringify({ candidate: e.candidate }));
+    const answer = await pcRef.current.createAnswer();
+    await pcRef.current.setLocalDescription(answer);
+
+    alert(
+      "Copy this answer and paste it on the PC page:\n\n" +
+        JSON.stringify({ sdp: pcRef.current.localDescription })
+    );
+
+    setConnected(true);
+  };
+
+  return (
+    <div style={{ padding: "20px" }}>
+      <h1>Mobile - Screen Receiver</h1>
+      <button onClick={connectToPC}>
+        {connected ? "Connected" : "Connect to PC"}
+      </button>
+      <video
+        autoPlay
+        playsInline
+        style={{ width: "100%", marginTop: "20px" }}
+        ref={videoRef}
+      />
+    </div>
+  );
+}      if (e.candidate) console.log(JSON.stringify({ candidate: e.candidate }));
     };
 
     const offer = await pc.createOffer();
