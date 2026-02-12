@@ -35,9 +35,11 @@ export default function PCPage() {
     });
 
     pc.onicecandidate = (e) => {
-      if (e.candidate) {
-        console.log(JSON.stringify({ candidate: e.candidate }));
-      }
+        if (!e.candidate) {
+            setOfferText(JSON.stringify({
+                sdp: pc.localDescription
+            }));
+        }
     };
 
     const offer = await pc.createOffer();
