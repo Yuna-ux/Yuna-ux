@@ -20,7 +20,7 @@ export default function PCPage() {
           width: { max: 1920 },
           height: { max: 1080 }
         },
-        audio: false,
+        audio: true,
       };
 
       const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
