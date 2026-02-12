@@ -4,10 +4,19 @@ import { useRef, useState, useEffect } from "react";
 export default function MobilePage() {
   const pcRef = useRef(null);
   const videoRef = useRef(null);
+  const wakeLockRef = useRef(null);
 
   const [connected, setConnected] = useState(false);
   const [offerInput, setOfferInput] = useState("");
   const [answerOutput, setAnswerOutput] = useState("");
+
+  const requestWakeLock = async () => {
+    try {
+      if ("wakeLock" in navigator) {
+        wakeLockRef.current = await navigator.wakeLock.request("screen");
+      }
+    } catch (err) {}
+  };
 
   useEffect(() => {
     const pc = new RTCPeerConnection({
@@ -34,7 +43,24 @@ export default function MobilePage() {
     };
 
     pcRef.current = pc;
-    return () => pc.close();
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        requestWakeLock();
+        if (videoRef.current && videoRef.current.paused) {
+          videoRef.current.play().catch(() => {});
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    requestWakeLock();
+
+    return () => {
+      pc.close();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      if (wakeLockRef.current) wakeLockRef.current.release();
+    };
   }, []);
 
   const connect = async () => {
@@ -58,6 +84,7 @@ export default function MobilePage() {
       await pc.setRemoteDescription(new RTCSessionDescription(offerData.sdp));
       const answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
+      requestWakeLock();
     } catch (err) {
       console.error(err);
       alert("Invalid offer or connection error");
