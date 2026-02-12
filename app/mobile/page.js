@@ -1,14 +1,21 @@
-// It uses a client, not a server.
 "use client";
 
 import { useRef, useState, useEffect } from "react";
 
 export default function MobilePage() {
-  useEffect(() => {
-  pcRef.current = new RTCPeerConnection();
-}, []);
+  const pcRef = useRef(null);
   const videoRef = useRef(null);
   const [connected, setConnected] = useState(false);
+
+  useEffect(() => {
+    pcRef.current = new RTCPeerConnection();
+
+    pcRef.current.ontrack = (event) => {
+      if (videoRef.current) {
+        videoRef.current.srcObject = event.streams[0];
+      }
+    };
+  }, []);
 
   const connect = async () => {
     const offerText = prompt("Paste the offer from PC:");
@@ -17,12 +24,6 @@ export default function MobilePage() {
     const offerData = JSON.parse(offerText);
 
     await pcRef.current.setRemoteDescription(offerData.sdp);
-
-    pcRef.current.ontrack = (event) => {
-      if (videoRef.current) {
-        videoRef.current.srcObject = event.streams[0];
-      }
-    };
 
     const answer = await pcRef.current.createAnswer();
     await pcRef.current.setLocalDescription(answer);
@@ -41,6 +42,7 @@ export default function MobilePage() {
       <button onClick={connect}>
         {connected ? "Connected" : "Connect"}
       </button>
+
       <video
         ref={videoRef}
         autoPlay
