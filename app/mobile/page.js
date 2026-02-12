@@ -26,28 +26,26 @@ export default function MobilePage() {
   }, []);
 
   const connect = async () => {
-    if (!offerInput) return;
+  if (!offerInput) return;
 
-    const offerData = JSON.parse(offerInput);
+  const offerData = JSON.parse(offerInput);
+    
+  await pcRef.current.setRemoteDescription(offerData.sdp);
+    
+  pcRef.current.onicecandidate = (e) => {
+    if (!e.candidate) {
+      const answerText = JSON.stringify({
+        sdp: pcRef.current.localDescription,
+      });
 
-    await pcRef.current.setRemoteDescription(offerData.sdp);
-
-    const answer = await pcRef.current.createAnswer();
-    await pcRef.current.setLocalDescription(answer);
-
-    const answerText = JSON.stringify({
-      sdp: pcRef.current.localDescription,
-    });
-
-    setAnswerOutput(answerText);
-    setConnected(true);
+      setAnswerOutput(answerText);
+      setConnected(true);
+    }
   };
 
-  const copyAnswer = async () => {
-    if (!answerOutput) return;
-    await navigator.clipboard.writeText(answerOutput);
-    alert("Answer copied");
-  };
+  const answer = await pcRef.current.createAnswer();
+  await pcRef.current.setLocalDescription(answer);
+};
 
   return (
     <div style={{ padding: 20 }}>
