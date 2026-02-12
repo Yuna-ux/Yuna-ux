@@ -3,7 +3,9 @@
 import { useRef, useState } from "react";
 
 export default function MobilePage() {
-  const pcRef = useRef(new RTCPeerConnection());
+  useEffect(() => {
+  pcRef.current = new RTCPeerConnection();
+}, []);
   const videoRef = useRef(null);
   const [connected, setConnected] = useState(false);
 
