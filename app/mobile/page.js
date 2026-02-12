@@ -12,6 +12,8 @@ export default function MobilePage() {
   useEffect(() => {
     const pc = new RTCPeerConnection({
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+      bundlePolicy: "max-bundle",
+      rtcpMuxPolicy: "require"
     });
 
     pc.ontrack = (event) => {
@@ -24,6 +26,8 @@ export default function MobilePage() {
     pc.onconnectionstatechange = () => {
       if (pc.connectionState === "connected") {
         setConnected(true);
+      } else if (pc.connectionState === "disconnected" || pc.connectionState === "failed") {
+        setConnected(false);
       }
     };
 
@@ -49,12 +53,12 @@ export default function MobilePage() {
         }
       };
 
-      await pc.setRemoteDescription(offerData.sdp);
-
+      await pc.setRemoteDescription(new RTCSessionDescription(offerData.sdp));
       const answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
-    } catch {
-      alert("Invalid offer");
+    } catch (err) {
+      console.error(err);
+      alert("Invalid offer or connection error");
     }
   };
 
@@ -84,6 +88,7 @@ export default function MobilePage() {
       border: "1px solid #334155",
       borderRadius: 8,
       padding: 8,
+      fontSize: "12px"
     },
     button: {
       marginTop: 10,
