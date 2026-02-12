@@ -12,33 +12,45 @@ export default function PCPage() {
   const startTransmission = async () => {
     if (streaming) return;
 
-    const stream = await navigator.mediaDevices.getDisplayMedia({
-      video: true,
-      audio: false,
-    });
+    try {
+      const constraints = {
+        video: {
+          displaySurface: "monitor",
+          frameRate: { ideal: 30 },
+          width: { max: 1920 },
+          height: { max: 1080 }
+        },
+        audio: false,
+      };
 
-    videoRef.current.srcObject = stream;
+      const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
+      videoRef.current.srcObject = stream;
 
-    const pc = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-    });
+      const pc = new RTCPeerConnection({
+        iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+        bundlePolicy: "max-bundle",
+        rtcpMuxPolicy: "require"
+      });
 
-    pcRef.current = pc;
+      pcRef.current = pc;
 
-    stream.getTracks().forEach((track) => {
-      pc.addTrack(track, stream);
-    });
+      stream.getTracks().forEach((track) => {
+        pc.addTrack(track, stream);
+      });
 
-    pc.onicecandidate = (e) => {
-      if (!e.candidate) {
-        setOfferText(JSON.stringify({ sdp: pc.localDescription }));
-      }
-    };
+      pc.onicecandidate = (e) => {
+        if (!e.candidate) {
+          setOfferText(JSON.stringify({ sdp: pc.localDescription }));
+        }
+      };
 
-    const offer = await pc.createOffer();
-    await pc.setLocalDescription(offer);
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
 
-    setStreaming(true);
+      setStreaming(true);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const applyAnswer = async () => {
@@ -72,6 +84,7 @@ export default function PCPage() {
       border: "1px solid #334155",
       borderRadius: 8,
       padding: 8,
+      fontSize: "12px"
     },
     button: {
       marginTop: 10,
