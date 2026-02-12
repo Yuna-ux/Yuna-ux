@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 
 export async function GET(request) {
-  // (?userId=12345)
   const { searchParams } = new URL(request.url)
   const userId = searchParams.get('userId')
 
@@ -24,16 +23,22 @@ export async function GET(request) {
     }
 
     const data = await response.json()
+    const joinDate = new Date(data.created);
     
     return NextResponse.json({
-    status: 'success',
-    data: {
-      userId: data.id,
-      username: data.name,
-      createdRaw: data.created, // ISO 8601 (Ex: 2015-06-12T10:22:30Z)
-      timestamp: Math.floor(joinDate.getTime() / 1000), // Unix Timestamp (Universal)
-    }
-  });
+      status: 'success',
+      data: {
+        userId: data.id,
+        username: data.name,
+        createdRaw: data.created, 
+        timestamp: Math.floor(joinDate.getTime() / 1000), 
+      }
+    }, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      }
+    });
 
   } catch (error) {
     return NextResponse.json(
