@@ -12,40 +12,48 @@ export default function MobilePage() {
 
   useEffect(() => {
     const pc = new RTCPeerConnection({
-        iceServers: [
-            { urls: "stun:stun.l.google.com:19302" }
-        ]
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
     });
-    pcRef.current = pc;
 
     pc.ontrack = (event) => {
       if (videoRef.current) {
         videoRef.current.srcObject = event.streams[0];
       }
     };
+
+    pcRef.current = pc;
   }, []);
 
   const connect = async () => {
-  if (!offerInput) return;
+    if (!offerInput) return;
 
-  const offerData = JSON.parse(offerInput);
-    
-  await pcRef.current.setRemoteDescription(offerData.sdp);
-    
-  pcRef.current.onicecandidate = (e) => {
-    if (!e.candidate) {
-      const answerText = JSON.stringify({
-        sdp: pcRef.current.localDescription,
-      });
+    const pc = pcRef.current;
+    const offerData = JSON.parse(offerInput);
 
-      setAnswerOutput(answerText);
-      setConnected(true);
-    }
+    // Wait ICE gathering complete
+    pc.onicecandidate = (e) => {
+      if (!e.candidate) {
+        const finalAnswer = JSON.stringify({
+          sdp: pc.localDescription,
+        });
+
+        setAnswerOutput(finalAnswer);
+        setConnected(true);
+        console.log("Answer ready");
+      }
+    };
+
+    await pc.setRemoteDescription(offerData.sdp);
+
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
   };
 
-  const answer = await pcRef.current.createAnswer();
-  await pcRef.current.setLocalDescription(answer);
-};
+  const copyAnswer = async () => {
+    if (!answerOutput) return;
+    await navigator.clipboard.writeText(answerOutput);
+    alert("Answer copied");
+  };
 
   return (
     <div style={{ padding: 20 }}>
@@ -55,7 +63,7 @@ export default function MobilePage() {
       <textarea
         value={offerInput}
         onChange={(e) => setOfferInput(e.target.value)}
-        rows={6}
+        rows={8}
         style={{ width: "100%" }}
       />
 
@@ -69,7 +77,7 @@ export default function MobilePage() {
           <textarea
             value={answerOutput}
             readOnly
-            rows={6}
+            rows={8}
             style={{ width: "100%" }}
           />
           <button onClick={copyAnswer}>Copy Answer</button>
