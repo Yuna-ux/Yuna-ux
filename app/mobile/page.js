@@ -19,7 +19,9 @@ export default function MobilePage() {
     pc.ontrack = (event) => {
       if (videoRef.current) {
         videoRef.current.srcObject = event.streams[0];
-        videoRef.current.play().catch(() => {});
+        videoRef.current.play().catch(() => {
+          console.log("Clique na tela para ativar o áudio");
+        });
       }
     };
 
@@ -154,7 +156,6 @@ export default function MobilePage() {
         <video
           ref={videoRef}
           autoPlay
-          muted
           playsInline
           controls
           style={styles.video}
