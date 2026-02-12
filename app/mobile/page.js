@@ -15,8 +15,6 @@ export default function MobilePage() {
     });
 
     pc.ontrack = (event) => {
-      console.log("Track received");
-
       if (videoRef.current) {
         videoRef.current.srcObject = event.streams[0];
         videoRef.current.play().catch(() => {});
@@ -24,17 +22,13 @@ export default function MobilePage() {
     };
 
     pc.onconnectionstatechange = () => {
-      console.log("Mobile state:", pc.connectionState);
       if (pc.connectionState === "connected") {
         setConnected(true);
       }
     };
 
     pcRef.current = pc;
-
-    return () => {
-      pc.close();
-    };
+    return () => pc.close();
   }, []);
 
   const connect = async () => {
@@ -52,7 +46,6 @@ export default function MobilePage() {
               sdp: pc.localDescription,
             })
           );
-          console.log("Answer ready");
         }
       };
 
@@ -60,43 +53,108 @@ export default function MobilePage() {
 
       const answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
-    } catch (e) {
-      console.error(e);
+    } catch {
       alert("Invalid offer");
     }
   };
 
+  const copyAnswer = () => {
+    navigator.clipboard.writeText(answerOutput);
+  };
+
+  const styles = {
+    page: {
+      minHeight: "100vh",
+      background: "#0f172a",
+      color: "#fff",
+      padding: 20,
+      fontFamily: "sans-serif",
+    },
+    card: {
+      background: "#1e293b",
+      borderRadius: 12,
+      padding: 16,
+      marginBottom: 16,
+      boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
+    },
+    textarea: {
+      width: "100%",
+      background: "#0f172a",
+      color: "#fff",
+      border: "1px solid #334155",
+      borderRadius: 8,
+      padding: 8,
+    },
+    button: {
+      marginTop: 10,
+      padding: "10px 14px",
+      borderRadius: 8,
+      border: "none",
+      background: connected ? "#22c55e" : "#3b82f6",
+      color: "#fff",
+      fontWeight: "bold",
+      cursor: "pointer",
+      width: "100%",
+    },
+    video: {
+      width: "100%",
+      borderRadius: 12,
+      background: "#000",
+      boxShadow: "0 4px 20px rgba(0,0,0,0.6)",
+    },
+    status: {
+      marginBottom: 10,
+      color: connected ? "#22c55e" : "#facc15",
+      fontWeight: "bold",
+    },
+  };
+
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Mobile Receiver</h1>
+    <div style={styles.page}>
+      <h2>📱 Mobile Receiver</h2>
 
-      <p>Paste Offer from PC</p>
-      <textarea
-        value={offerInput}
-        onChange={(e) => setOfferInput(e.target.value)}
-        rows={8}
-        style={{ width: "100%" }}
-      />
+      <div style={styles.status}>
+        {connected ? "Connected" : "Waiting connection..."}
+      </div>
 
-      <button onClick={connect}>
-        {connected ? "Connected" : "Connect"}
-      </button>
+      <div style={styles.card}>
+        <p>Paste Offer</p>
+        <textarea
+          value={offerInput}
+          onChange={(e) => setOfferInput(e.target.value)}
+          rows={6}
+          style={styles.textarea}
+        />
+        <button style={styles.button} onClick={connect}>
+          {connected ? "Connected" : "Connect"}
+        </button>
+      </div>
 
       {answerOutput && (
-        <>
-          <p>Answer (copy to PC)</p>
-          <textarea value={answerOutput} readOnly rows={8} style={{ width: "100%" }} />
-        </>
+        <div style={styles.card}>
+          <p>Answer</p>
+          <textarea
+            value={answerOutput}
+            readOnly
+            rows={6}
+            style={styles.textarea}
+          />
+          <button style={styles.button} onClick={copyAnswer}>
+            Copy Answer
+          </button>
+        </div>
       )}
 
-      <video
-        ref={videoRef}
-        autoPlay
-        muted
-        playsInline
-        controls
-        style={{ width: "100%", marginTop: 20 }}
-      />
+      <div style={styles.card}>
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          playsInline
+          controls
+          style={styles.video}
+        />
+      </div>
     </div>
   );
-        }
+}
