@@ -1,5 +1,4 @@
 "use client";
-
 import { useRef, useState, useEffect } from "react";
 
 export default function MobilePage() {
@@ -16,43 +15,55 @@ export default function MobilePage() {
     });
 
     pc.ontrack = (event) => {
+      console.log("Track received");
+
       if (videoRef.current) {
         videoRef.current.srcObject = event.streams[0];
+        videoRef.current.play().catch(() => {});
+      }
+    };
+
+    pc.onconnectionstatechange = () => {
+      console.log("Mobile state:", pc.connectionState);
+      if (pc.connectionState === "connected") {
+        setConnected(true);
       }
     };
 
     pcRef.current = pc;
+
+    return () => {
+      pc.close();
+    };
   }, []);
 
   const connect = async () => {
     if (!offerInput) return;
 
     const pc = pcRef.current;
-    const offerData = JSON.parse(offerInput);
 
-    // Wait ICE gathering complete
-    pc.onicecandidate = (e) => {
-      if (!e.candidate) {
-        const finalAnswer = JSON.stringify({
-          sdp: pc.localDescription,
-        });
+    try {
+      const offerData = JSON.parse(offerInput);
 
-        setAnswerOutput(finalAnswer);
-        setConnected(true);
-        console.log("Answer ready");
-      }
-    };
+      pc.onicecandidate = (e) => {
+        if (!e.candidate) {
+          setAnswerOutput(
+            JSON.stringify({
+              sdp: pc.localDescription,
+            })
+          );
+          console.log("Answer ready");
+        }
+      };
 
-    await pc.setRemoteDescription(offerData.sdp);
+      await pc.setRemoteDescription(offerData.sdp);
 
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
-  };
-
-  const copyAnswer = async () => {
-    if (!answerOutput) return;
-    await navigator.clipboard.writeText(answerOutput);
-    alert("Answer copied");
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+    } catch (e) {
+      console.error(e);
+      alert("Invalid offer");
+    }
   };
 
   return (
@@ -72,24 +83,20 @@ export default function MobilePage() {
       </button>
 
       {answerOutput && (
-        <div style={{ marginTop: 20 }}>
+        <>
           <p>Answer (copy to PC)</p>
-          <textarea
-            value={answerOutput}
-            readOnly
-            rows={8}
-            style={{ width: "100%" }}
-          />
-          <button onClick={copyAnswer}>Copy Answer</button>
-        </div>
+          <textarea value={answerOutput} readOnly rows={8} style={{ width: "100%" }} />
+        </>
       )}
 
       <video
         ref={videoRef}
         autoPlay
+        muted
         playsInline
+        controls
         style={{ width: "100%", marginTop: 20 }}
       />
     </div>
   );
-}
+        }
