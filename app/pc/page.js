@@ -1,81 +1,112 @@
 "use client";
+
 import { useRef, useState } from "react";
 
 export default function PCPage() {
-  const pcRef = useRef(null);
-  const [offerOutput, setOfferOutput] = useState("");
+  const [streaming, setStreaming] = useState(false);
+  const [offerText, setOfferText] = useState("");
   const [answerInput, setAnswerInput] = useState("");
 
-  const createConnection = async () => {
+  const pcRef = useRef(null);
+  const videoRef = useRef(null);
+
+  const startTransmission = async () => {
+    if (streaming) return;
+
+    const stream = await navigator.mediaDevices.getDisplayMedia({
+      video: true,
+      audio: false,
+    });
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = stream;
+    }
+
     const pc = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
     });
 
     pcRef.current = pc;
 
-    const stream = await navigator.mediaDevices.getDisplayMedia({
-      video: true,
-      audio: false
+    stream.getTracks().forEach((track) => {
+      pc.addTrack(track, stream);
     });
 
-    stream.getTracks().forEach(track => pc.addTrack(track, stream));
-
+    // Wait ICE gathering complete
     pc.onicecandidate = (e) => {
       if (!e.candidate) {
-        setOfferOutput(JSON.stringify({
-          sdp: pc.localDescription
-        }));
+        const finalOffer = JSON.stringify({
+          sdp: pc.localDescription,
+        });
+
+        setOfferText(finalOffer);
+        console.log("Offer ready");
       }
     };
 
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
+
+    setStreaming(true);
+  };
+
+  const copyOffer = async () => {
+    if (!offerText) return;
+    await navigator.clipboard.writeText(offerText);
+    alert("Offer copied");
   };
 
   const applyAnswer = async () => {
-    if (!answerInput || !pcRef.current) return;
+    if (!answerInput) return;
 
-    try {
-      const data = JSON.parse(answerInput);
-      await pcRef.current.setRemoteDescription(data.sdp);
-      alert("Connected!");
-    } catch (err) {
-      console.error(err);
-      alert("Invalid Answer JSON");
-    }
+    const data = JSON.parse(answerInput);
+    await pcRef.current.setRemoteDescription(data.sdp);
+
+    console.log("Connection state:", pcRef.current.connectionState);
+    alert("Answer applied");
   };
 
   return (
     <div style={{ padding: 20 }}>
-      <h1>PC Sender</h1>
+      <h1>PC - Screen Sharing</h1>
 
-      <button onClick={createConnection}>
-        Start Screen Share
+      <button onClick={startTransmission}>
+        {streaming ? "Streaming started" : "Start streaming"}
       </button>
 
-      {offerOutput && (
-        <>
+      {offerText && (
+        <div style={{ marginTop: 20 }}>
           <p>Offer (copy to mobile)</p>
           <textarea
-            value={offerOutput}
+            value={offerText}
             readOnly
             rows={8}
             style={{ width: "100%" }}
           />
-        </>
+          <button onClick={copyOffer}>Copy Offer</button>
+        </div>
       )}
 
-      <p>Paste Answer from mobile</p>
-      <textarea
-        value={answerInput}
-        onChange={(e) => setAnswerInput(e.target.value)}
-        rows={8}
-        style={{ width: "100%" }}
-      />
+      {streaming && (
+        <div style={{ marginTop: 20 }}>
+          <p>Paste Answer from mobile</p>
+          <textarea
+            value={answerInput}
+            onChange={(e) => setAnswerInput(e.target.value)}
+            rows={8}
+            style={{ width: "100%" }}
+          />
+          <button onClick={applyAnswer}>Apply Answer</button>
+        </div>
+      )}
 
-      <button onClick={applyAnswer}>
-        Apply Answer
-      </button>
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        muted
+        style={{ width: "100%", marginTop: 20 }}
+      />
     </div>
   );
 }
