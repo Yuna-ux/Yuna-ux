@@ -1,5 +1,4 @@
 "use client";
-
 import { useRef, useState } from "react";
 
 export default function PCPage() {
@@ -32,14 +31,17 @@ export default function PCPage() {
       pc.addTrack(track, stream);
     });
 
-    // Wait ICE gathering complete
+    pc.onconnectionstatechange = () => {
+      console.log("PC state:", pc.connectionState);
+    };
+
     pc.onicecandidate = (e) => {
       if (!e.candidate) {
-        const finalOffer = JSON.stringify({
-          sdp: pc.localDescription,
-        });
-
-        setOfferText(finalOffer);
+        setOfferText(
+          JSON.stringify({
+            sdp: pc.localDescription,
+          })
+        );
         console.log("Offer ready");
       }
     };
@@ -50,20 +52,23 @@ export default function PCPage() {
     setStreaming(true);
   };
 
-  const copyOffer = async () => {
-    if (!offerText) return;
-    await navigator.clipboard.writeText(offerText);
-    alert("Offer copied");
-  };
-
   const applyAnswer = async () => {
-    if (!answerInput) return;
+    if (!answerInput || !pcRef.current) return;
 
-    const data = JSON.parse(answerInput);
-    await pcRef.current.setRemoteDescription(data.sdp);
+    try {
+      const data = JSON.parse(answerInput);
 
-    console.log("Connection state:", pcRef.current.connectionState);
-    alert("Answer applied");
+      if (pcRef.current.signalingState !== "have-local-offer") {
+        alert("Wrong state: " + pcRef.current.signalingState);
+        return;
+      }
+
+      await pcRef.current.setRemoteDescription(data.sdp);
+      console.log("Answer applied");
+    } catch (e) {
+      console.error(e);
+      alert("Invalid JSON");
+    }
   };
 
   return (
@@ -75,20 +80,14 @@ export default function PCPage() {
       </button>
 
       {offerText && (
-        <div style={{ marginTop: 20 }}>
+        <>
           <p>Offer (copy to mobile)</p>
-          <textarea
-            value={offerText}
-            readOnly
-            rows={8}
-            style={{ width: "100%" }}
-          />
-          <button onClick={copyOffer}>Copy Offer</button>
-        </div>
+          <textarea value={offerText} readOnly rows={8} style={{ width: "100%" }} />
+        </>
       )}
 
       {streaming && (
-        <div style={{ marginTop: 20 }}>
+        <>
           <p>Paste Answer from mobile</p>
           <textarea
             value={answerInput}
@@ -97,7 +96,7 @@ export default function PCPage() {
             style={{ width: "100%" }}
           />
           <button onClick={applyAnswer}>Apply Answer</button>
-        </div>
+        </>
       )}
 
       <video
