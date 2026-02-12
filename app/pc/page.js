@@ -17,9 +17,7 @@ export default function PCPage() {
       audio: false,
     });
 
-    if (videoRef.current) {
-      videoRef.current.srcObject = stream;
-    }
+    videoRef.current.srcObject = stream;
 
     const pc = new RTCPeerConnection({
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
@@ -31,18 +29,9 @@ export default function PCPage() {
       pc.addTrack(track, stream);
     });
 
-    pc.onconnectionstatechange = () => {
-      console.log("PC state:", pc.connectionState);
-    };
-
     pc.onicecandidate = (e) => {
       if (!e.candidate) {
-        setOfferText(
-          JSON.stringify({
-            sdp: pc.localDescription,
-          })
-        );
-        console.log("Offer ready");
+        setOfferText(JSON.stringify({ sdp: pc.localDescription }));
       }
     };
 
@@ -53,59 +42,106 @@ export default function PCPage() {
   };
 
   const applyAnswer = async () => {
-    if (!answerInput || !pcRef.current) return;
-
     try {
       const data = JSON.parse(answerInput);
-
-      if (pcRef.current.signalingState !== "have-local-offer") {
-        alert("Wrong state: " + pcRef.current.signalingState);
-        return;
-      }
-
       await pcRef.current.setRemoteDescription(data.sdp);
-      console.log("Answer applied");
-    } catch (e) {
-      console.error(e);
-      alert("Invalid JSON");
+    } catch {
+      alert("Invalid answer");
     }
   };
 
-  return (
-    <div style={{ padding: 20 }}>
-      <h1>PC - Screen Sharing</h1>
+  const styles = {
+    page: {
+      minHeight: "100vh",
+      background: "#020617",
+      color: "#fff",
+      padding: 20,
+      fontFamily: "sans-serif",
+    },
+    card: {
+      background: "#1e293b",
+      borderRadius: 12,
+      padding: 16,
+      marginBottom: 16,
+      boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
+    },
+    textarea: {
+      width: "100%",
+      background: "#020617",
+      color: "#fff",
+      border: "1px solid #334155",
+      borderRadius: 8,
+      padding: 8,
+    },
+    button: {
+      marginTop: 10,
+      padding: "10px 14px",
+      borderRadius: 8,
+      border: "none",
+      background: streaming ? "#22c55e" : "#3b82f6",
+      color: "#fff",
+      fontWeight: "bold",
+      cursor: "pointer",
+      width: "100%",
+    },
+    video: {
+      width: "100%",
+      borderRadius: 12,
+      background: "#000",
+      boxShadow: "0 4px 20px rgba(0,0,0,0.6)",
+    },
+    status: {
+      marginBottom: 10,
+      color: streaming ? "#22c55e" : "#facc15",
+      fontWeight: "bold",
+    },
+  };
 
-      <button onClick={startTransmission}>
-        {streaming ? "Streaming started" : "Start streaming"}
-      </button>
+  return (
+    <div style={styles.page}>
+      <h2>🖥 PC Screen Sender</h2>
+
+      <div style={styles.status}>
+        {streaming ? "Streaming active" : "Not streaming"}
+      </div>
+
+      <div style={styles.card}>
+        <button style={styles.button} onClick={startTransmission}>
+          {streaming ? "Streaming started" : "Start streaming"}
+        </button>
+      </div>
 
       {offerText && (
-        <>
-          <p>Offer (copy to mobile)</p>
-          <textarea value={offerText} readOnly rows={8} style={{ width: "100%" }} />
-        </>
+        <div style={styles.card}>
+          <p>Offer</p>
+          <textarea readOnly value={offerText} rows={6} style={styles.textarea} />
+        </div>
       )}
 
       {streaming && (
-        <>
-          <p>Paste Answer from mobile</p>
+        <div style={styles.card}>
+          <p>Paste Answer</p>
           <textarea
             value={answerInput}
             onChange={(e) => setAnswerInput(e.target.value)}
-            rows={8}
-            style={{ width: "100%" }}
+            rows={6}
+            style={styles.textarea}
           />
-          <button onClick={applyAnswer}>Apply Answer</button>
-        </>
+          <button style={styles.button} onClick={applyAnswer}>
+            Apply Answer
+          </button>
+        </div>
       )}
 
-      <video
-        ref={videoRef}
-        autoPlay
-        playsInline
-        muted
-        style={{ width: "100%", marginTop: 20 }}
-      />
+      <div style={styles.card}>
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          playsInline
+          style={styles.video}
+        />
+      </div>
     </div>
   );
 }
