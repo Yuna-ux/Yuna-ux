@@ -1,3 +1,4 @@
+// It uses a client, not a server.
 "use client";
 
 import { useRef, useState } from "react";
