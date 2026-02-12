@@ -22,7 +22,12 @@ export default function PCPage() {
       videoRef.current.srcObject = stream;
     }
 
-    const pc = new RTCPeerConnection();
+    const pc = new RTCPeerConnection({
+        iceServers: [
+            { urls: "stun:stun.l.google.com:19302" }
+        ]
+    });
+    
     pcRef.current = pc;
 
     stream.getTracks().forEach(track => {
