@@ -23,41 +23,47 @@ export default function PCPage() {
     }
 
     const pc = new RTCPeerConnection({
-        iceServers: [
-            { urls: "stun:stun.l.google.com:19302" }
-        ]
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
     });
-    
+
     pcRef.current = pc;
 
-    stream.getTracks().forEach(track => {
+    stream.getTracks().forEach((track) => {
       pc.addTrack(track, stream);
     });
 
+    // Wait ICE gathering complete
     pc.onicecandidate = (e) => {
-        if (!e.candidate) {
-            setOfferText(JSON.stringify({
-                sdp: pc.localDescription
-            }));
-        }
+      if (!e.candidate) {
+        const finalOffer = JSON.stringify({
+          sdp: pc.localDescription,
+        });
+
+        setOfferText(finalOffer);
+        console.log("Offer ready");
+      }
     };
 
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
 
-    setOfferText(JSON.stringify({ sdp: pc.localDescription }));
     setStreaming(true);
   };
 
   const copyOffer = async () => {
+    if (!offerText) return;
     await navigator.clipboard.writeText(offerText);
     alert("Offer copied");
   };
 
   const applyAnswer = async () => {
+    if (!answerInput) return;
+
     const data = JSON.parse(answerInput);
     await pcRef.current.setRemoteDescription(data.sdp);
-    alert("Connected");
+
+    console.log("Connection state:", pcRef.current.connectionState);
+    alert("Answer applied");
   };
 
   return (
@@ -74,7 +80,7 @@ export default function PCPage() {
           <textarea
             value={offerText}
             readOnly
-            rows={6}
+            rows={8}
             style={{ width: "100%" }}
           />
           <button onClick={copyOffer}>Copy Offer</button>
@@ -87,7 +93,7 @@ export default function PCPage() {
           <textarea
             value={answerInput}
             onChange={(e) => setAnswerInput(e.target.value)}
-            rows={6}
+            rows={8}
             style={{ width: "100%" }}
           />
           <button onClick={applyAnswer}>Apply Answer</button>
@@ -103,4 +109,4 @@ export default function PCPage() {
       />
     </div>
   );
-              }
+}
