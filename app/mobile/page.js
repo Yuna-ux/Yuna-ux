@@ -185,6 +185,7 @@ export default function MobilePage() {
           autoPlay
           playsInline
           controls
+          muted
           style={styles.video}
         />
       </div>
