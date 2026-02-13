@@ -35,11 +35,17 @@ export default function MobilePage() {
     };
 
     pc.onconnectionstatechange = () => {
-      if (pc.connectionState === "connected") {
-        setConnected(true);
-      } else if (pc.connectionState === "disconnected" || pc.connectionState === "failed") {
-        setConnected(false);
-      }
+        if (pc.connectionState === "disconnected" || pc.connectionState === "failed") {
+            console.log("Reconnecting...");
+            setConnected(false);
+        }
+
+        if (pc.connectionState === "connected") {
+            setConnected(true);
+            if (videoRef.current) {
+                videoRef.current.play().catch(() => {});
+            }
+        }
     };
 
     pcRef.current = pc;
