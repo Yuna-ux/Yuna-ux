@@ -51,12 +51,17 @@ export default function MobilePage() {
     pcRef.current = pc;
 
     const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        requestWakeLock();
-        if (videoRef.current && videoRef.current.paused) {
-          videoRef.current.play().catch(() => {});
+            if (document.visibilityState === "visible") {
+                requestWakeLock();
+
+            if (videoRef.current) {
+                videoRef.current.play().catch(() => {});
+            }
+
+            if (pcRef.current.connectionState !== "connected") {
+                console.log("Connection lost, reconnect required");
+            }
         }
-      }
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
