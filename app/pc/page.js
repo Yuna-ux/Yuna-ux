@@ -27,7 +27,7 @@ export default function PCPage() {
       videoRef.current.srcObject = stream;
 
       const pc = new RTCPeerConnection({
-        iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+        iceServers: [{ urls: "stun:stun1.voiceeclipse.net:3478" }],
         bundlePolicy: "max-bundle",
         rtcpMuxPolicy: "require"
       });
