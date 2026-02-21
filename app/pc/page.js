@@ -16,7 +16,7 @@ export default function PCPage() {
       const constraints = {
         video: {
           displaySurface: "monitor",
-          frameRate: { ideal: 30 },
+          frameRate: { ideal: 60 },
           width: { max: 1920 },
           height: { max: 1080 }
         },
