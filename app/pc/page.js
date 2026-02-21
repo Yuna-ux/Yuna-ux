@@ -27,13 +27,22 @@ export default function PCPage() {
       videoRef.current.srcObject = stream;
 
       const pc = new RTCPeerConnection({
-        iceServers: [{ urls: "stun:stun1.voiceeclipse.net:3478" }],
+        iceServers: [
+            { urls: "stun:stun1.voiceeclipse.net:3478" },
+            { urls: "stun:stun.l.google.com:19302"}
+        ],
         bundlePolicy: "max-bundle",
         rtcpMuxPolicy: "require"
       });
 
       pcRef.current = pc;
-
+      
+      pc.getSenders().forEach(sender => {
+          const params = sender.getParameters();
+          params.encodings = [{ maxBitrate: 2000000 }]; // reduz atraso por bitrate alto
+          sender.setParameters(params);
+      });
+      
       stream.getTracks().forEach((track) => {
         pc.addTrack(track, stream);
       });
